@@ -67,8 +67,10 @@ Click the **Fork** button on the top right of this repo to copy it to your GitHu
 ### 2. Clone Your Fork
 Clone your forked repository to your local machine:
 
+```
 git clone https://github.com/marjan-ahmed/nasa-weather-probability-app.git
 cd nasa-weather-probability-app
+```
 
 ---
 
