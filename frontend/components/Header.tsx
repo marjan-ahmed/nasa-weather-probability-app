@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ShinyButton } from "@/components/ui/shiny-button";
+import Link from 'next/link';
 
 
 export default function Header() {
@@ -27,10 +28,13 @@ export default function Header() {
 
       <nav className="mx-auto flex items-center justify-between p-2 px-4">
         {/* Logo / Left side */}
+                  <Link href={'/'}>
         <div className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
           <Grid2x2PlusIcon className="size-5" />
           <p className="font-mono text-base font-bold">Asme</p>
         </div>
+                  </Link>
+
 
         {/* Desktop Nav */}
         <div className="hidden items-center gap-4 lg:flex">
