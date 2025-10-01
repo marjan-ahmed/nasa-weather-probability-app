@@ -44,39 +44,37 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50 px-4 pt-10 md:pt-0">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-12">
+      <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50 px-4 pt-28 md:pt-48">
+        <div className="mx-auto max-w-6xl h-full flex items-center justify-center">
+          <div className="text-center space-y-8 md:space-y-12 w-full">
 
-            {/* Left Content */}
-            <div className="relative z-10 space-y-8">
-              <div className="space-y-6">
-               <h1 className="font-exo text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-  {/* <span className="bg-gradient-to-r from-blue-600 via-blue-800 to-green-600 bg-clip-text text-transparent">
-    Forecast Smarter
-  </span> */}
-  <br />
-  <span className="text-gray-900">
-    Want to Plan an Outdoor Events<span className='font-lexend'>?</span> 
-  </span>
+            {/* Main Heading */}
+            <div className="relative z-10 space-y-3">
+<h1 className="font-exo text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-gray-900 text-center">
+  Want to Plan an Outdoor 
+  <br className="hidden lg:block" /> {/* Only breaks line on lg+ screens */}
+  Events<span className='font-lexend'>?</span>
 </h1>
 
-                <TextGenerateEffect words={hero_paragraph} /> 
-              </div>
 
-              <div className="flex font-lexend flex-col sm:flex-row gap-4">
-                <Button className="py-6 px-6">
-                  <Link href="/dashboard">Check Weather Probabilities</Link>
-                </Button>
-                <Button variant="outline" className="py-6 px-6">
-                  <Link href="#workflow">Learn How It Works</Link>
-                </Button>
+              <div className="max-w-4xl mx-auto flex justify-center">
+                <TextGenerateEffect words={hero_paragraph} /> 
               </div>
             </div>
 
-            {/* Right Lottie Animation */}
-            <div className="relative z-10 flex items-center justify-center">
-              <div className="w-full flex justify-center items-center max-w-2xl lg:max-w-6xl">
+            {/* CTA Buttons */}
+            <div className="relative z-10 flex font-lexend flex-col sm:flex-row justify-center gap-4 px-4">
+              <Button className="py-6 px-6 w-full sm:w-auto">
+                <Link href="/dashboard">Check Weather Probabilities</Link>
+              </Button>
+              <Button variant="outline" className="py-6 px-6 w-full sm:w-auto">
+                <Link href="#workflow">Learn How It Works</Link>
+              </Button>
+            </div>
+
+            {/* Centered Lottie Animation */}
+            <div className="relative z-10 flex items-center justify-center mt-8 md:mt-12">
+              <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
                 <LottieAnimation />
               </div>
             </div>
