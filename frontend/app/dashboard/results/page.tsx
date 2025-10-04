@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -39,7 +39,16 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { WeatherChatAssistant } from '@/components/WeatherChatAssistant';
+import dynamic from 'next/dynamic';
+
+// Dynamic import for client-side only component
+const WeatherChatAssistant = dynamic(
+  () => import('@/components/WeatherChatAssistant').then(mod => ({ default: mod.WeatherChatAssistant })),
+  { 
+    ssr: false,
+    loading: () => null
+  }
+);
 
 // Types
 interface WeatherData {
@@ -122,7 +131,7 @@ const CHART_COLORS = {
   veryUncomfortable: '#f59e0b'
 };
 
-export default function ResultsPage() {
+function ResultsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -130,7 +139,7 @@ export default function ResultsPage() {
 
   useEffect(() => {
     try {
-      const dataParam = searchParams.get('data');
+      const dataParam = searchParams?.get('data');
       if (dataParam) {
         const decodedData = JSON.parse(decodeURIComponent(dataParam));
         setWeatherData(decodedData);
@@ -483,6 +492,9 @@ export default function ResultsPage() {
   };
 
   const shareResults = async () => {
+    // Check if we're in the browser
+    if (typeof window === 'undefined') return;
+    
     const url = window.location.href;
     
     if (navigator.share) {
@@ -502,8 +514,16 @@ export default function ResultsPage() {
   };
 
   const copyToClipboard = (text: string) => {
+    // Check if we're in the browser
+    if (typeof window === 'undefined' || !navigator.clipboard) {
+      console.log('Clipboard not available');
+      return;
+    }
+    
     navigator.clipboard.writeText(text).then(() => {
       alert('Link copied to clipboard!');
+    }).catch((error) => {
+      console.error('Failed to copy to clipboard:', error);
     });
   };
 
@@ -987,10 +1007,35 @@ export default function ResultsPage() {
         </div>
       </div>
       
-      {/* AI Weather Assistant Chat */}
-      <WeatherChatAssistant weatherData={weatherData} />
+      {/* AI Weather Assistant Chat - Client-side only */}
+      {weatherData && <WeatherChatAssistant weatherData={weatherData} />}
       
       <Footer />
     </>
+  );
+}
+
+// Loading component for Suspense fallback
+function ResultsLoading() {
+  return (
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading results...</p>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={<ResultsLoading />}>
+      <ResultsContent />
+    </Suspense>
   );
 }
