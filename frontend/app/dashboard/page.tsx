@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Calendar, BarChart3 } from "lucide-react";
+
+import { Search, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Header from "@/components/Header";
@@ -47,6 +48,7 @@ function LocationInput({ onSelect }: { onSelect: (location: { name: string; lat:
     }
   };
 
+  
   return (
     <div className="relative">
       <div className="relative">
@@ -56,7 +58,7 @@ function LocationInput({ onSelect }: { onSelect: (location: { name: string; lat:
           disabled={!ready}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Enter any location"
-          className="pl-10 rounded-none border-2 border-black py-4"
+          className="pl-10 py-6 placeholder:font-mono placeholder:uppercase rounded-none border-2 border-black"
         />
       </div>
 
@@ -75,6 +77,65 @@ function LocationInput({ onSelect }: { onSelect: (location: { name: string; lat:
       )}
     </div>
   );
+}
+
+// ---- Simple DatePicker Component ----
+function formatDateDisplay(date: Date | undefined) {
+  if (!date) {
+    return ""
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long", 
+    year: "numeric",
+  })
+}
+
+function SimpleDatePicker({ selectedDate, onDateChange }: { selectedDate: string, onDateChange: (date: string) => void }) {
+  const [displayValue, setDisplayValue] = React.useState("")
+
+  React.useEffect(() => {
+    if (selectedDate) {
+      const date = new Date(selectedDate)
+      setDisplayValue(formatDateDisplay(date))
+    } else {
+      setDisplayValue("")
+    }
+  }, [selectedDate])
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value
+    onDateChange(dateValue)
+    
+    if (dateValue) {
+      const date = new Date(dateValue)
+      setDisplayValue(formatDateDisplay(date))
+    } else {
+      setDisplayValue("")
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label className="block text-sm font-medium font-lexend">Date</label>
+      <div className="relative">
+        <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <Input
+          type="date"
+          value={selectedDate}
+          onChange={handleDateChange}
+          max="2026-12-31"
+          className="pl-10 py-6 rounded-none border-2 border-black"
+        />
+      </div>
+      {displayValue && (
+        <div className="text-sm text-gray-600 pl-1">
+          Selected: <span className="font-medium">{displayValue}</span>
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ---- Helpers ----
@@ -173,18 +234,46 @@ export default function Dashboard() {
         rh: (RH2M as any)[k] ?? null,
       }));
 
+      console.log(`Found ${matchingKeys.length} matching dates for ${targetMonth}/${targetDay}`);
+      console.log(`Thresholds:`, THRESHOLDS);
+      console.log(`First few samples:`, samples.slice(0, 5));
+
       let validYears = 0;
       const counts = { veryHot: 0, veryCold: 0, veryWindy: 0, veryWet: 0, veryUncomfortable: 0 };
 
       samples.forEach(({ tmax, tmin, wind, rain, rh }) => {
+        // Skip only if ALL values are null
         if ([tmax, tmin, wind, rain, rh].every((v) => v === null)) return;
         validYears++;
-        if (tmax >= THRESHOLDS.veryHotC) counts.veryHot++;
-        if (tmin <= THRESHOLDS.veryColdC) counts.veryCold++;
-        if (wind >= THRESHOLDS.veryWindyMs) counts.veryWindy++;
-        if (rain >= THRESHOLDS.veryWetMm) counts.veryWet++;
-        if (tmax >= THRESHOLDS.uncomfortableTempC && rh >= THRESHOLDS.uncomfortableRH) counts.veryUncomfortable++;
+        
+        // Debug logging
+        console.log(`Year sample: tmax=${tmax}, tmin=${tmin}, wind=${wind}, rain=${rain}, rh=${rh}`);
+        
+        // Check each condition with null safety
+        if (tmax !== null && tmax >= THRESHOLDS.veryHotC) {
+          counts.veryHot++;
+          console.log(`Very hot detected: ${tmax}°C >= ${THRESHOLDS.veryHotC}°C`);
+        }
+        if (tmin !== null && tmin <= THRESHOLDS.veryColdC) {
+          counts.veryCold++;
+          console.log(`Very cold detected: ${tmin}°C <= ${THRESHOLDS.veryColdC}°C`);
+        }
+        if (wind !== null && wind >= THRESHOLDS.veryWindyMs) {
+          counts.veryWindy++;
+          console.log(`Very windy detected: ${wind}m/s >= ${THRESHOLDS.veryWindyMs}m/s`);
+        }
+        if (rain !== null && rain >= THRESHOLDS.veryWetMm) {
+          counts.veryWet++;
+          console.log(`Very wet detected: ${rain}mm >= ${THRESHOLDS.veryWetMm}mm`);
+        }
+        if (tmax !== null && rh !== null && tmax >= THRESHOLDS.uncomfortableTempC && rh >= THRESHOLDS.uncomfortableRH) {
+          counts.veryUncomfortable++;
+          console.log(`Very uncomfortable detected: ${tmax}°C >= ${THRESHOLDS.uncomfortableTempC}°C AND ${rh}% >= ${THRESHOLDS.uncomfortableRH}%`);
+        }
       });
+
+      console.log(`Final counts:`, counts);
+      console.log(`Valid years: ${validYears}`);
 
       const probabilities = {
         veryHot: validYears ? counts.veryHot / validYears : 0,
@@ -193,6 +282,8 @@ export default function Dashboard() {
         veryWet: validYears ? counts.veryWet / validYears : 0,
         veryUncomfortable: validYears ? counts.veryUncomfortable / validYears : 0,
       };
+
+      console.log(`Calculated probabilities:`, probabilities);
 
       const resultsData = { yearsSampled: validYears, counts, probabilities };
       setResults(resultsData);
@@ -238,13 +329,13 @@ export default function Dashboard() {
         <div className="h-screen flex flex-col lg:flex-row relative">
           {/* Left: Inputs */}
           <div className={`w-full mt-20 lg:w-1/2 flex flex-col justify-start px-8 py-8 gap-6 bg-white ${loading ? "opacity-30" : "opacity-100"}`}>
-            <h1 className="text-3xl font-bold">Weather Probability Checker</h1>
+            <h1 className="text-3xl font-exo font-bold">Weather Probability Checker</h1>
             <p className="text-gray-700 max-w-lg">
               Choose a location and a future date. We'll fetch NASA POWER historical daily data and compute probabilities for that location.
             </p>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Location</label>
+              <label className="block text-sm font-medium mb-2 font-lexend">Location</label>
               <LocationInput onSelect={handleLocationSelect} />
               <div className="text-sm text-gray-600 mt-2">
                 Selected:{" "}
@@ -258,22 +349,11 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Date</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                <Input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="pl-10 rounded-none border-2 border-black py-3"
-                />
-              </div>
-            </div>
+            <SimpleDatePicker selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
             <div className="flex gap-3">
               <Button onClick={handleSubmit} className="bg-black text-white px-6 py-3" disabled={loading}>
-                {loading ? "Analyzing..." : <><BarChart3 className="w-4 h-4 mr-2" />Analyze Weather Probability</>}
+                {loading ? "Analyzing..." : <><BarChart3 className="w-4 h-4 mr-2" />Analyze</>}
               </Button>
               <Button
                 onClick={() => {
