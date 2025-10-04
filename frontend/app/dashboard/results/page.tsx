@@ -570,18 +570,53 @@ function ResultsContent() {
     { name: 'Uncomfortable', percentage: weatherData.probabilities.veryUncomfortable * 100, count: weatherData.counts.veryUncomfortable, color: CHART_COLORS.veryUncomfortable }
   ];
 
-  // Historical trend data (group by decades for better visualization)
-  const trendData = weatherData.historicalData
-    .filter(d => d.tmax !== null || d.tmin !== null || d.rain !== null || d.wind !== null)
+  // Historical trend data with proper filtering and null handling
+  const rawTrendData = weatherData.historicalData
+    .filter(d => d.tmax !== null && d.tmin !== null && d.rain !== null && d.wind !== null)
     .map(d => ({
       year: parseInt(d.year),
-      tmax: d.tmax,
-      tmin: d.tmin,
-      rain: d.rain,
-      wind: d.wind,
-      rh: d.rh
+      tmax: Number(d.tmax),
+      tmin: Number(d.tmin),
+      rain: Number(d.rain),
+      wind: Number(d.wind),
+      rh: d.rh ? Number(d.rh) : null
     }))
     .sort((a, b) => a.year - b.year);
+
+  // Group by 5-year periods for better trend visualization if we have many data points
+  const trendData = rawTrendData.length > 20 ? 
+    rawTrendData.reduce((acc: any[], curr, index) => {
+      const groupIndex = Math.floor(index / 5);
+      if (!acc[groupIndex]) {
+        acc[groupIndex] = {
+          year: curr.year,
+          tmax: [],
+          tmin: [],
+          rain: [],
+          wind: [],
+          count: 0
+        };
+      }
+      acc[groupIndex].tmax.push(curr.tmax);
+      acc[groupIndex].tmin.push(curr.tmin);
+      acc[groupIndex].rain.push(curr.rain);
+      acc[groupIndex].wind.push(curr.wind);
+      acc[groupIndex].count++;
+      return acc;
+    }, []).map(group => ({
+      year: group.year,
+      tmax: group.tmax.reduce((a: number, b: number) => a + b, 0) / group.tmax.length,
+      tmin: group.tmin.reduce((a: number, b: number) => a + b, 0) / group.tmin.length,
+      rain: group.rain.reduce((a: number, b: number) => a + b, 0) / group.rain.length,
+      wind: group.wind.reduce((a: number, b: number) => a + b, 0) / group.wind.length,
+    })) : rawTrendData;
+
+  console.log('Trend Data Sample:', trendData.slice(0, 5));
+  console.log('Trend Data Length:', trendData.length);
+  console.log('Temperature Range:', {
+    maxTemp: Math.max(...trendData.map(d => d.tmax)),
+    minTemp: Math.min(...trendData.map(d => d.tmin))
+  });
 
   return (
     <>
@@ -851,10 +886,18 @@ function ResultsContent() {
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Historical Temperature Trend</h2>
                 <ResponsiveContainer width="100%" height={350}>
-                  <LineChart data={trendData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }} />
+                  <LineChart data={trendData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                    <XAxis 
+                      dataKey="year" 
+                      domain={['dataMin', 'dataMax']}
+                      type="number"
+                      scale="linear"
+                    />
+                    <YAxis 
+                      label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
+                      domain={['dataMin - 5', 'dataMax + 5']}
+                    />
                     <Tooltip 
                       formatter={(value, name) => [
                         `${Number(value).toFixed(1)}°C`, 
@@ -863,8 +906,24 @@ function ResultsContent() {
                       labelFormatter={(year) => `Year: ${year}`}
                     />
                     <Legend />
-                    <Line type="monotone" dataKey="tmax" stroke="#ef4444" name="Max Temperature" strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="tmin" stroke="#3b82f6" name="Min Temperature" strokeWidth={2} dot={false} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="tmax" 
+                      stroke="#ef4444" 
+                      name="Max Temperature" 
+                      strokeWidth={2} 
+                      dot={{ r: 2 }} 
+                      connectNulls={false}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="tmin" 
+                      stroke="#3b82f6" 
+                      name="Min Temperature" 
+                      strokeWidth={2} 
+                      dot={{ r: 2 }} 
+                      connectNulls={false}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -873,11 +932,25 @@ function ResultsContent() {
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Precipitation & Wind Trend</h2>
                 <ResponsiveContainer width="100%" height={350}>
-                  <LineChart data={trendData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis yAxisId="left" label={{ value: 'Precipitation (mm)', angle: -90, position: 'insideLeft' }} />
-                    <YAxis yAxisId="right" orientation="right" label={{ value: 'Wind Speed (m/s)', angle: 90, position: 'insideRight' }} />
+                  <LineChart data={trendData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                    <XAxis 
+                      dataKey="year" 
+                      domain={['dataMin', 'dataMax']}
+                      type="number"
+                      scale="linear"
+                    />
+                    <YAxis 
+                      yAxisId="left" 
+                      label={{ value: 'Precipitation (mm)', angle: -90, position: 'insideLeft' }}
+                      domain={[0, 'dataMax + 10']}
+                    />
+                    <YAxis 
+                      yAxisId="right" 
+                      orientation="right" 
+                      label={{ value: 'Wind Speed (m/s)', angle: 90, position: 'insideRight' }}
+                      domain={[0, 'dataMax + 5']}
+                    />
                     <Tooltip 
                       formatter={(value, name) => {
                         if (name === 'rain') return [`${Number(value).toFixed(1)} mm`, 'Precipitation'];
@@ -887,8 +960,26 @@ function ResultsContent() {
                       labelFormatter={(year) => `Year: ${year}`}
                     />
                     <Legend />
-                    <Line yAxisId="left" type="monotone" dataKey="rain" stroke="#06b6d4" name="Precipitation" strokeWidth={2} dot={false} />
-                    <Line yAxisId="right" type="monotone" dataKey="wind" stroke="#6b7280" name="Wind Speed" strokeWidth={2} dot={false} />
+                    <Line 
+                      yAxisId="left" 
+                      type="monotone" 
+                      dataKey="rain" 
+                      stroke="#06b6d4" 
+                      name="Precipitation" 
+                      strokeWidth={2} 
+                      dot={{ r: 2 }} 
+                      connectNulls={false}
+                    />
+                    <Line 
+                      yAxisId="right" 
+                      type="monotone" 
+                      dataKey="wind" 
+                      stroke="#6b7280" 
+                      name="Wind Speed" 
+                      strokeWidth={2} 
+                      dot={{ r: 2 }} 
+                      connectNulls={false}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
