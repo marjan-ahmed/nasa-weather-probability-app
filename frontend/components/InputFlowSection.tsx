@@ -10,23 +10,23 @@ export function InputFlowSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-6">
-            <div className="inline-block rounded-full bg-blue-100 px-4 py-2 text-sm text-blue-700">
-              📝 User Input
+            <div className="text-xs sm:text-sm px-3 py-1 bg-[#0B1E3F]/80 inline-block rounded-full font-lexend font-extralight text-white">
+              User Input
             </div>
 
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 leading-tight">
-              <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl lg:text-5xl font-bold font-exo text-gray-900 leading-tight">
+              <span className="text-[#0F1939] bg-clip-text">
                 Location & Time
               </span>
               <br />
               Weather Dashboard Flow
             </h2>
 
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-lg font-lexend text-gray-600 leading-relaxed">
               Users first provide the city, then choose the date and time. The system then processes the input and displays a personalized probability-based weather result on the dashboard.
             </p>
 
-            <div className="space-y-4">
+            <div className="font-lexend text-sm sm:text-base space-y-4">
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center mt-1">
                   <div className="w-2 h-2 bg-white rounded-full"></div>

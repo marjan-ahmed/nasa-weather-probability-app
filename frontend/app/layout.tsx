@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Exo_2, Lexend } from "next/font/google";
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -48,7 +47,6 @@ export default function RootLayout({
         className={`${exo2.variable} ${lexend.variable} antialiased `}
       >
           {children}
-          <SmoothCursor />
       </body>
     </html>
   );

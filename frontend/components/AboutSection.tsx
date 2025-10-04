@@ -34,24 +34,43 @@ export function AboutSection() {
           <div className="space-y-8">
             <div className="space-y-4">
               <p className="text-blue-300 text-sm font-medium tracking-wider uppercase">
-                Download Our App
+                About Our Platform
               </p>
               <h2 className="text-white font-exo text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                Unlock
+                Weather
                 <br />
                 <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
-                  the
+                  Intelligence
                 </span>
               </h2>
             </div>
 
-            <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-2xl font-lexend">
-              platform, powered by NASA Earth observation
-              data, revolutionizes the way you plan and execute outdoor events.
-              From venue selection to weather forecasting and carbon footprint
-              tracking, we provide unparalleled insights to ensure your events
-              are seamless, sustainable, and unforgettable.
-            </p>
+            <div className="space-y-6">
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-2xl font-lexend">
+                Our platform harnesses the power of NASA's POWER (Prediction of Worldwide Energy Resources) satellite data 
+                to provide accurate weather probability analysis. With over 40 years of historical climate data from 1981 to 2025, 
+                we help you make informed decisions for outdoor events and activities.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                  <h3 className="text-white font-semibold mb-2">44+ Years of Data</h3>
+                  <p className="text-gray-400 text-sm">Historical weather patterns from NASA satellite observations</p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                  <h3 className="text-white font-semibold mb-2">Global Coverage</h3>
+                  <p className="text-gray-400 text-sm">Worldwide location support with precise coordinate mapping</p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                  <h3 className="text-white font-semibold mb-2">5 Key Metrics</h3>
+                  <p className="text-gray-400 text-sm">Temperature, precipitation, wind, humidity analysis</p>
+                </div>
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                  <h3 className="text-white font-semibold mb-2">AI Insights</h3>
+                  <p className="text-gray-400 text-sm">Smart recommendations for event planning</p>
+                </div>
+              </div>
+            </div>
 
             <div className="flex items-center space-x-4">
               {/* NASA Logo */}
@@ -66,89 +85,114 @@ export function AboutSection() {
                   </svg>
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg">Paradox</div>
-                  <div className="text-gray-400 text-sm">Powered by Explorex</div>
+                  <div className="text-white font-bold text-lg">NASA POWER</div>
+                  <div className="text-gray-400 text-sm">Satellite Data Source</div>
                 </div>
               </div>
             </div>
 
-            <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300">
-              Get the App
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 shadow-lg">
+              Start Analysis
             </Button>
           </div>
 
           {/* Right Phone Mockup */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Phone Frame */}
-              <div className="w-80 h-[600px] bg-gray-100 rounded-[3rem] p-2 shadow-2xl">
-                <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                  {/* Status Bar */}
-                  <div className="flex justify-between items-center px-6 py-3 bg-white">
-                    <div className="text-black text-sm font-medium">9:41 AM</div>
-                    <div className="flex space-x-1">
-                      <div className="w-4 h-2 bg-black rounded-sm"></div>
-                      <div className="w-4 h-2 bg-black rounded-sm"></div>
-                      <div className="w-4 h-2 bg-gray-300 rounded-sm"></div>
+            <div className="relative transform rotate-3 hover:rotate-1 transition-all duration-500 ease-out">
+              {/* Phone Frame with 3D effect */}
+              <div className="w-80 h-[600px] bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 rounded-[3rem] p-2 shadow-2xl relative">
+                {/* 3D depth effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-white/20 rounded-[3rem]"></div>
+                <div className="absolute top-1 left-1 w-full h-full bg-gradient-to-tl from-white/30 to-transparent rounded-[3rem]"></div>
+                
+                <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative shadow-inner">
+                  {/* Status Bar with depth */}
+                  <div className="flex justify-between items-center px-6 py-3 bg-gradient-to-b from-white to-gray-50 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+                    <div className="text-black text-sm font-medium relative z-10">9:41 AM</div>
+                    <div className="flex space-x-1 relative z-10">
+                      <div className="w-4 h-2 bg-gradient-to-b from-gray-800 to-black rounded-sm shadow-sm"></div>
+                      <div className="w-4 h-2 bg-gradient-to-b from-gray-800 to-black rounded-sm shadow-sm"></div>
+                      <div className="w-4 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-sm shadow-sm"></div>
                     </div>
                   </div>
 
                   {/* App Header */}
-                  <div className="px-6 py-4 bg-white border-b border-gray-100">
+                  <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg"></div>
+                        <div className="w-8 h-8 bg-white/20 rounded-lg backdrop-blur-sm"></div>
                         <div>
-                          <div className="text-sm font-semibold text-gray-800">
-                            Weather Forecast
+                          <div className="text-sm font-semibold text-white">
+                            Weather Probability
                           </div>
-                          <div className="text-xs text-gray-500">
-                            NASA Data Analysis
+                          <div className="text-xs text-white/80">
+                            15 September 2025
                           </div>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
-                        <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                      <div className="text-white/90 text-xs font-medium">
+                        New York, NY
                       </div>
                     </div>
                   </div>
 
                   {/* Main Content Area */}
                   <div className="p-6 space-y-4">
-                    <div className="w-full h-40 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/20"></div>
-                      <div className="absolute bottom-4 left-4 text-white">
-                        <div className="text-xs opacity-75">Current Location</div>
-                        <div className="text-sm font-medium">Temperature Analysis</div>
+                    {/* Location Card with 3D effect */}
+                    <div className="w-full h-32 bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 rounded-xl relative overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300">
+                      <div className="absolute inset-0 bg-gradient-to-tl from-white/20 via-transparent to-black/10"></div>
+                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                      <div className="absolute top-4 left-4 text-white z-10">
+                        <div className="text-xs opacity-90 drop-shadow-sm">Based on 44 years of data</div>
+                        <div className="text-lg font-bold mt-1 drop-shadow-md">Weather Analysis</div>
                       </div>
+                      <div className="absolute bottom-4 right-4 text-white text-right z-10">
+                        <div className="text-xs opacity-90 drop-shadow-sm">Confidence Level</div>
+                        <div className="text-lg font-bold drop-shadow-md">94%</div>
+                      </div>
+                      {/* 3D highlight */}
+                      <div className="absolute top-2 left-2 w-16 h-4 bg-gradient-to-r from-white/30 to-transparent rounded-full blur-sm"></div>
                     </div>
 
                     <div className="space-y-3">
-                      <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-10 h-10 bg-blue-500 rounded-lg"></div>
-                        <div className="flex-1">
-                          <div className="text-sm font-medium text-gray-800">
-                            Extreme Temp
+                      <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
                           </div>
-                          <div className="text-xs text-gray-500">
-                            Probability analysis for extreme conditions
+                          <div>
+                            <div className="text-sm font-medium text-gray-800">Very Hot</div>
+                            <div className="text-xs text-gray-500">≥35°C Temperature</div>
                           </div>
                         </div>
-                        <div className="text-xs text-blue-600 font-medium">85°F</div>
+                        <div className="text-red-600 font-bold">12.5%</div>
                       </div>
 
-                      <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-10 h-10 bg-purple-500 rounded-lg"></div>
-                        <div className="flex-1">
-                          <div className="text-sm font-medium text-gray-800">
-                            Precipitation
+                      <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
                           </div>
-                          <div className="text-xs text-gray-500">
-                            Rainfall patterns based on historical data
+                          <div>
+                            <div className="text-sm font-medium text-gray-800">Very Wet</div>
+                            <div className="text-xs text-gray-500">≥20mm Precipitation</div>
                           </div>
                         </div>
-                        <div className="text-xs text-purple-600 font-medium">23%</div>
+                        <div className="text-blue-600 font-bold">8.7%</div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-800">Very Windy</div>
+                            <div className="text-xs text-gray-500">≥10m/s Wind Speed</div>
+                          </div>
+                        </div>
+                        <div className="text-gray-600 font-bold">3.2%</div>
                       </div>
                     </div>
                   </div>
@@ -157,9 +201,16 @@ export function AboutSection() {
                 </div>
               </div>
 
-              {/* Floating Elements */}
-              <div className="absolute -top-8 -right-8 w-16 h-16 bg-blue-500/20 rounded-full blur-xl"></div>
-              <div className="absolute -bottom-12 -left-12 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl"></div>
+              {/* Enhanced 3D Shadow Effects */}
+              <div className="absolute top-4 left-4 w-80 h-[600px] bg-black/20 rounded-[3rem] blur-md -z-10 transform translate-x-2 translate-y-2"></div>
+              <div className="absolute top-8 left-8 w-80 h-[600px] bg-black/10 rounded-[3rem] blur-lg -z-20 transform translate-x-4 translate-y-4"></div>
+              
+              {/* Floating Elements with 3D effect */}
+              <div className="absolute -top-8 -right-8 w-16 h-16 bg-blue-500/20 rounded-full blur-xl animate-bounce"></div>
+              <div className="absolute -bottom-12 -left-12 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse"></div>
+              
+              {/* 3D Light reflection */}
+              <div className="absolute top-20 -left-4 w-2 h-40 bg-gradient-to-b from-white/40 via-white/20 to-transparent rounded-full blur-sm transform -rotate-12"></div>
             </div>
           </div>
         </div>

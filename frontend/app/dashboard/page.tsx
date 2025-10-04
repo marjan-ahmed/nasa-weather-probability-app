@@ -6,7 +6,7 @@ import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocom
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { Search, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
+import { Search, Calendar as CalendarIcon, BarChart3, ArrowBigRightDash, ArrowBigRightIcon, ArrowRight } from "lucide-react";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Header from "@/components/Header";
@@ -51,14 +51,14 @@ function LocationInput({ onSelect }: { onSelect: (location: { name: string; lat:
   
   return (
     <div className="relative">
-      <div className="relative">
+      <div className="relative flex items-center">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         <Input
           value={value}
           disabled={!ready}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Enter any location"
-          className="pl-10 py-6 placeholder:font-mono placeholder:uppercase rounded-none border-2 border-black"
+          className="pl-10 py-6 placeholder:font-mono sm:placeholder:text-sm placeholder:text-sm placeholder:uppercase rounded-none border-2 border-black"
         />
       </div>
 
@@ -351,10 +351,23 @@ export default function Dashboard() {
 
             <SimpleDatePicker selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
-            <div className="flex gap-3">
-              <Button onClick={handleSubmit} className="bg-black text-white px-6 py-3" disabled={loading}>
-                {loading ? "Analyzing..." : <><BarChart3 className="w-4 h-4 mr-2" />Analyze</>}
-              </Button>
+            <div className="flex gap-2">
+             <Button
+  onClick={handleSubmit}
+  className="bg-black text-white px-6 py-6 font-lexend flex items-center justify-center gap-2 group transition-all duration-300"
+  disabled={loading}
+>
+  {loading ? (
+    "Analyzing..."
+  ) : (
+    <>
+      <span>Analyze</span>
+      <ArrowRight
+        className="w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1"
+      />
+    </>
+  )}
+</Button>
               <Button
                 onClick={() => {
                   setSelectedDate("");
@@ -363,7 +376,7 @@ export default function Dashboard() {
                   setSamplesTable([]);
                 }}
                 variant="ghost"
-                className="px-6 py-3"
+                className="font-lexend px-7 py-6 border-2 border-gray-100"
               >
                 Reset
               </Button>
