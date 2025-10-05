@@ -1,11 +1,9 @@
 'use client';
 
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { AboutSection } from '@/components/AboutSection'; 
 import HowItWorksSection from '@/components/HowItWorksSection';
-import Footer from '@/components/Footer';
 import { FeaturesSection } from '@/components/FeaturesSection';
 import { InputFlowSection } from '@/components/InputFlowSection';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
@@ -39,10 +37,8 @@ Plan outdoor events with confidence using NASA Earth observation data. Get histo
 // 🔹 Home Page
 export default function Home() {
   return (
+    <>
     <div className="min-h-screen">
-      {/* Header */}
-      <Header />
-
       {/* Hero Section */}
       <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50 px-4 pt-28 md:pt-48">
         <div className="mx-auto max-w-6xl h-full flex items-center justify-center">
@@ -92,7 +88,7 @@ export default function Home() {
       <AboutSection />
       <FeaturesSection />
       <InputFlowSection />
-      <Footer />
     </div>
+    </>
   );
 }

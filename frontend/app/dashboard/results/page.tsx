@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { 
   BarChart, 
@@ -35,12 +34,11 @@ import {
   Wind,
   CloudRain,
   Droplets,
-  Database
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import dynamic from 'next/dynamic';
-
+import { ProgressBar } from '@/components/ProgressBar';
 // Dynamic import for client-side only component
 const WeatherChatAssistant = dynamic(
   () => import('@/components/WeatherChatAssistant').then(mod => ({ default: mod.WeatherChatAssistant })),
@@ -88,39 +86,6 @@ interface WeatherData {
     uncomfortableRH: number;
   };
 }
-
-// Progress Bar Component
-const ProgressBar = ({ label, percentage, color, icon: Icon, count, total }: {
-  label: string;
-  percentage: number;
-  color: string;
-  icon: React.ComponentType<any>;
-  count: number;
-  total: number;
-}) => (
-  <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center space-x-3">
-        <div className={`p-3 rounded-full ${color.replace('bg-', 'bg-').replace('-500', '-100')}`}>
-          <Icon className={`w-6 h-6 ${color.replace('bg-', 'text-')}`} />
-        </div>
-        <div>
-          <h3 className="font-semibold text-gray-800">{label}</h3>
-          <p className="text-sm text-gray-500">{count} out of {total} years</p>
-        </div>
-      </div>
-      <div className="text-right">
-        <div className="text-2xl font-bold text-gray-800">{(percentage * 100).toFixed(1)}%</div>
-      </div>
-    </div>
-    <div className="w-full bg-gray-200 rounded-full h-3">
-      <div 
-        className={`h-3 rounded-full transition-all duration-1000 ease-out ${color}`}
-        style={{ width: `${percentage * 100}%` }}
-      />
-    </div>
-  </div>
-);
 
 // Chart Colors
 const CHART_COLORS = {
@@ -529,23 +494,20 @@ function ResultsContent() {
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading results...</p>
-          </div>
-        </div>
-        <Footer />
-      </>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+        <DotLottieReact
+          src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+          loop
+          autoplay
+          className="w-56 h-56"
+        />
+      </div>
     );
   }
 
   if (!weatherData) {
     return (
       <>
-        <Header />
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">No Results Found</h1>
@@ -556,7 +518,6 @@ function ResultsContent() {
             </Button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -620,15 +581,14 @@ function ResultsContent() {
 
   return (
     <>
-      <Header />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
         {/* Header Section */}
         <div className="pt-24 pb-8 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">Weather Analysis Results</h1>
-                <div className="flex flex-wrap items-center gap-4 text-gray-600">
+                <h1 className="text-4xl font-bold font-exo text-gray-900 mb-2">Weather Analysis Results</h1>
+                <div className="flex font-lexend text-xs sm:text-sm flex-wrap items-center gap-4 text-gray-600">
                   <div className="flex items-center space-x-2">
                     <MapPin className="w-4 h-4" />
                     <span>{weatherData.location}</span>
@@ -685,16 +645,6 @@ function ResultsContent() {
                         </div>
                       </button>
                       
-                      <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase border-b border-t mt-1">
-                        Raw Data
-                      </div>
-                      <button onClick={exportRawData} className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100">
-                        <Database className="w-4 h-4 mr-2 text-blue-600" />
-                        <div>
-                          <div className="text-sm font-medium text-blue-700">NASA POWER Data</div>
-                          <div className="text-xs text-gray-500">Raw subset for query</div>
-                        </div>
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -703,18 +653,18 @@ function ResultsContent() {
 
             {/* Summary Statistics Section */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 mb-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Probability Analysis Summary</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4 font-exo">Probability Analysis Summary</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">{weatherData.yearsSampled}</div>
-                  <div className="text-sm text-gray-600">Years of Historical Data</div>
+                  <div className="text-3xl font-bold text-blue-600 font-mono">{weatherData.yearsSampled}</div>
+                  <div className="text-sm text-gray-600 font-lexend">Years of Historical Data</div>
                   <div className="text-xs text-gray-500 mt-1">1981 - 2025</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-3xl font-bold text-green-600">
+                  <div className="text-3xl font-bold font-mono text-green-600">
                     {Math.max(...Object.values(weatherData.probabilities)).toFixed(1)}%
                   </div>
-                  <div className="text-sm text-gray-600">Highest Probability</div>
+                  <div className="text-sm text-gray-600 font-lexend">Highest Probability</div>
                   <div className="text-xs text-gray-500 mt-1">
                     {Object.entries(weatherData.probabilities)
                       .reduce((a, b) => weatherData.probabilities[a[0] as keyof typeof weatherData.probabilities] > weatherData.probabilities[b[0] as keyof typeof weatherData.probabilities] ? a : b)[0]
@@ -723,10 +673,10 @@ function ResultsContent() {
                   </div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-3xl font-bold text-purple-600">
+                  <div className="text-3xl font-mono font-bold text-purple-600">
                     {Object.values(weatherData.counts).reduce((a, b) => a + b, 0)}
                   </div>
-                  <div className="text-sm text-gray-600">Total Extreme Events</div>
+                  <div className="text-sm text-gray-600 font-lexend">Total Extreme Events</div>
                   <div className="text-xs text-gray-500 mt-1">Across all categories</div>
                 </div>
               </div>
@@ -778,7 +728,7 @@ function ResultsContent() {
 
             {/* Detailed Probability Insights */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Probability Insights & Recommendations</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 font-exo">Probability Insights & Recommendations</h2>
               <div className="space-y-4">
                 {Object.entries(weatherData.probabilities)
                   .sort(([,a], [,b]) => b - a)
@@ -845,7 +795,7 @@ function ResultsContent() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Probability Bar Chart */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Weather Condition Probabilities</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 font-exo">Weather Condition Probabilities</h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={probabilityData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -859,7 +809,7 @@ function ResultsContent() {
 
               {/* Pie Chart */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Condition Distribution</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 font-exo">Condition Distribution</h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -884,7 +834,7 @@ function ResultsContent() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Temperature Trend */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Historical Temperature Trend</h2>
+                <h2 className="text-xl font-semibold mb-4 font-exo text-gray-800">Historical Temperature Trend</h2>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={trendData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -930,7 +880,7 @@ function ResultsContent() {
 
               {/* Precipitation and Wind Trend */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Precipitation & Wind Trend</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 font-exo">Precipitation & Wind Trend</h2>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={trendData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -987,7 +937,7 @@ function ResultsContent() {
 
             {/* Analysis Summary Table */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Analysis Summary & Planning Recommendations</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 font-exo">Analysis Summary & Planning Recommendations</h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -1100,8 +1050,6 @@ function ResultsContent() {
       
       {/* AI Weather Assistant Chat - Client-side only */}
       {weatherData && <WeatherChatAssistant weatherData={weatherData} />}
-      
-      <Footer />
     </>
   );
 }
@@ -1109,16 +1057,14 @@ function ResultsContent() {
 // Loading component for Suspense fallback
 function ResultsLoading() {
   return (
-    <>
-      <Header />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading results...</p>
-        </div>
-      </div>
-      <Footer />
-    </>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+      <DotLottieReact
+        src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+        loop
+        autoplay
+        className="w-56 h-56"
+      />
+    </div>
   );
 }
 

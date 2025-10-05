@@ -9,17 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Search, Calendar as CalendarIcon, BarChart3, ArrowBigRightDash, ArrowBigRightIcon, ArrowRight } from "lucide-react";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 // ---- Config / thresholds ----
 const THRESHOLDS = {
-  veryHotC: 35,
-  veryColdC: 0,
-  veryWindyMs: 10,
-  veryWetMm: 20,
-  uncomfortableTempC: 30,
-  uncomfortableRH: 70,
+  veryHotC: 32,
+  veryColdC: 5,
+  veryWindyMs: 8,
+  veryWetMm: 10,
+  uncomfortableTempC: 28,
+  uncomfortableRH: 65,
 };
 
 const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
@@ -210,7 +208,7 @@ export default function Dashboard() {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error("NASA POWER API request failed.");
       const data = await resp.json();
-
+      
       const { T2M_MAX = {}, T2M_MIN = {}, PRECTOTCORR = {}, WS10M = {}, RH2M = {} } = data.properties.parameter;
       const allKeys = Array.from(new Set([...Object.keys(T2M_MAX), ...Object.keys(T2M_MIN), ...Object.keys(PRECTOTCORR), ...Object.keys(WS10M), ...Object.keys(RH2M)])).sort();
 
@@ -233,7 +231,8 @@ export default function Dashboard() {
         wind: (WS10M as any)[k] ?? null,
         rh: (RH2M as any)[k] ?? null,
       }));
-
+      
+      console.log(data)
       console.log(`Found ${matchingKeys.length} matching dates for ${targetMonth}/${targetDay}`);
       console.log(`Thresholds:`, THRESHOLDS);
       console.log(`First few samples:`, samples.slice(0, 5));
@@ -311,108 +310,131 @@ export default function Dashboard() {
 
   return (
     <>
-      <Header />
+      
       <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
-        libraries={GM_LIBS}
-        loadingElement={
-          <div className="fixed inset-0 flex items-center justify-center bg-white">
-            <DotLottieReact
-              src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
-              loop
-              autoplay
-              className="w-56 h-56"
-            />
-          </div>
-        }
-      >
-        <div className="h-screen flex flex-col lg:flex-row relative">
-          {/* Left: Inputs */}
-          <div className={`w-full mt-20 lg:w-1/2 flex flex-col justify-start px-8 py-8 gap-6 bg-white ${loading ? "opacity-30" : "opacity-100"}`}>
-            <h1 className="text-3xl font-exo font-bold">Weather Probability Checker</h1>
-            <p className="text-gray-700 max-w-lg">
-              Choose a location and a future date. We'll fetch NASA POWER historical daily data and compute probabilities for that location.
-            </p>
-
-            <div>
-              <label className="block text-sm font-medium mb-2 font-lexend">Location</label>
-              <LocationInput onSelect={handleLocationSelect} />
-              <div className="text-sm text-gray-600 mt-2">
-                Selected:{" "}
-                {selectedLocation.name ? (
-                  <>
-                    <strong>{selectedLocation.name}</strong> • {selectedLocation.lat?.toFixed(4)}, {selectedLocation.lng?.toFixed(4)}
-                  </>
-                ) : (
-                  "None"
-                )}
-              </div>
-            </div>
-
-            <SimpleDatePicker selectedDate={selectedDate} onDateChange={setSelectedDate} />
-
-            <div className="flex gap-2">
-             <Button
-  onClick={handleSubmit}
-  className="bg-black text-white px-6 py-6 font-lexend flex items-center justify-center gap-2 group transition-all duration-300"
-  disabled={loading}
+  googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+  libraries={GM_LIBS}
 >
-  {loading ? (
-    "Analyzing..."
-  ) : (
-    <>
-      <span>Analyze</span>
-      <ArrowRight
-        className="w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1"
-      />
-    </>
-  )}
-</Button>
-              <Button
-                onClick={() => {
-                  setSelectedDate("");
-                  setSelectedLocation({ name: null, lat: null, lng: null });
-                  setResults(null);
-                  setSamplesTable([]);
-                }}
-                variant="ghost"
-                className="font-lexend px-7 py-6 border-2 border-gray-100"
-              >
-                Reset
-              </Button>
-            </div>
-          </div>
+  <div className="min-h-screen mt-20 flex flex-col lg:flex-row justify-between items-start max-w-7xl mx-auto px-4 py-10 gap-8">
+    {/* LEFT — Inputs */}
+    <div className="w-full lg:w-1/3 flex flex-col justify-start gap-6">
+      <h1 className="text-3xl font-exo font-bold">
+        Weather Probability Checker
+      </h1>
 
-          {/* Right: Map */}
-          <div className={`w-full lg:w-1/2 h-[50vh] lg:h-screen ${loading ? "opacity-30" : "opacity-100"}`}>
-            <GoogleMap
-              key={`${selectedLocation.lat ?? 0}-${selectedLocation.lng ?? 0}`}
-              center={{
-                lat: selectedLocation.lat ?? 30.3753,
-                lng: selectedLocation.lng ?? 69.3451,
-              }}
-              zoom={selectedLocation.lat ? 8 : 4}
-              mapContainerStyle={{ width: "100%", height: "100%" }}
-              onLoad={handleMapLoad}
-            >
-              {selectedLocation.lat && selectedLocation.lng && <Marker position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }} />}
-            </GoogleMap>
-          </div>
+      <p className="text-gray-700 max-w-md">
+        Choose a location and a future date. We’ll fetch NASA POWER historical
+        data and compute probabilities.
+      </p>
+
+      {/* Location Input */}
+      <div>
+        <label className="block text-sm font-medium mb-2 font-lexend">
+          Location
+        </label>
+        <LocationInput onSelect={handleLocationSelect} />
+
+        <div className="text-sm text-gray-600 mt-2">
+          Selected:{" "}
+          {selectedLocation.name ? (
+            <>
+              <strong>{selectedLocation.name}</strong> •{" "}
+              {selectedLocation.lat?.toFixed(4)},{" "}
+              {selectedLocation.lng?.toFixed(4)}
+            </>
+          ) : (
+            "None"
+          )}
         </div>
+      </div>
 
-        {/* Centered Lottie Animation for Loading */}
-        {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-            <DotLottieReact
-              src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
-              loop
-              autoplay
-              className="w-56 h-56"
+      {/* Date Picker */}
+      <SimpleDatePicker
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+      />
+
+      {/* Buttons */}
+      <div className="flex gap-2">
+        <Button
+          onClick={handleSubmit}
+          className="bg-black text-white px-6 py-6 font-lexend flex items-center justify-center gap-2 group transition-all duration-300"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span>Analyze</span>
+            </>
+          ) : (
+            <>
+              <span>Analyze</span>
+              <ArrowRight className="w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1" />
+            </>
+          )}
+        </Button>
+
+        <Button
+          onClick={() => {
+            setSelectedDate("");
+            setSelectedLocation({ name: null, lat: null, lng: null });
+          }}
+          variant="ghost"
+          className="font-lexend px-7 py-6 border-2 border-gray-100"
+        >
+          Reset
+        </Button>
+      </div>
+    </div>
+
+    {/* RIGHT — Map */}
+    <div
+      className={`flex justify-center items-center w-full lg:w-2/3 ${
+        loading ? "opacity-30" : "opacity-100"
+      }`}
+    >
+      <div className="relative w-[900px] h-[550px] rounded-lg overflow-hidden shadow-md">
+        <GoogleMap
+          key={`${selectedLocation.lat ?? 0}-${selectedLocation.lng ?? 0}`}
+          center={{
+            lat: selectedLocation.lat ?? 30.3753,
+            lng: selectedLocation.lng ?? 69.3451,
+          }}
+          zoom={selectedLocation.lat ? 8 : 4}
+          mapContainerStyle={{ width: "100%", height: "100%" }}
+          onLoad={handleMapLoad}
+          options={{
+            mapTypeControl: false,
+            fullscreenControl: false,
+            streetViewControl: false,
+            gestureHandling: "greedy",
+          }}
+        >
+          {selectedLocation.lat && selectedLocation.lng && (
+            <Marker
+              position={{
+                lat: selectedLocation.lat,
+                lng: selectedLocation.lng,
+              }}
             />
-          </div>
-        )}
-      </LoadScript>
-      <Footer />
+          )}
+        </GoogleMap>
+      </div>
+    </div>
+  </div>
+
+  {/* Loading State */}
+  {loading && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+      <DotLottieReact
+        src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+        loop
+        autoplay
+        className="w-56 h-56"
+      />
+    </div>
+  )}
+</LoadScript>
+
     </>
   );
 }

@@ -1,4 +1,5 @@
   import { useState, useEffect, useMemo } from "react";
+  import { DotLottieReact } from '@lottiefiles/dotlottie-react';
   import { City } from "./Globe";
   import { GeocodingService } from "@/app/services/geocoding"
   import { Button } from "./ui/button";
@@ -170,7 +171,12 @@
 
                 {isRotating && (
                   <div className="flex items-center gap-2 text-amber-400 text-sm">
-                    <div className="animate-spin rounded-full h-3 w-3 border border-amber-400 border-t-transparent"></div>
+                    <DotLottieReact
+                      src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+                      loop
+                      autoplay
+                      className="w-4 h-4"
+                    />
                     <span>Rotating to {selectedCity.name}...</span>
                   </div>
                 )}
@@ -213,7 +219,14 @@
                     className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                   />
                   {isSearching && (
-                    <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50 animate-spin" />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <DotLottieReact
+                        src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+                        loop
+                        autoplay
+                        className="w-4 h-4"
+                      />
+                    </div>
                   )}
                 </div>
 
@@ -243,9 +256,13 @@
                       ) : (
                         <div className="text-center text-white/50 py-8">
                           {isSearching ? (
-                            <div className="flex items-center justify-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              <span>Searching...</span>
+                            <div className="flex items-center justify-center">
+                              <DotLottieReact
+                                src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+                                loop
+                                autoplay
+                                className="w-8 h-8"
+                              />
                             </div>
                           ) : (
                             `No cities found matching "${searchTerm}"`
@@ -269,11 +286,13 @@
                 <ScrollArea className="h-80">
                   <div className="space-y-2">
                     {isLoadingPopular ? (
-                      <div className="text-center text-white/50 py-8">
-                        <div className="flex items-center justify-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>Loading popular cities...</span>
-                        </div>
+                      <div className="text-center text-white/50 py-8 flex items-center justify-center">
+                        <DotLottieReact
+                          src="https://lottie.host/68ba4118-65bc-424e-9b99-2143126eee69/elDPj1guZy.lottie"
+                          loop
+                          autoplay
+                          className="w-16 h-16"
+                        />
                       </div>
                     ) : popularCities.length > 0 ? (
                       popularCities.map((city) => (

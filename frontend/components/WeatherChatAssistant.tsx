@@ -3,6 +3,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import { Send, Bot, CornerDownLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -110,31 +111,39 @@ What would you like to plan for? 🚀`;
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "YOUR_API_KEY_HERE";
       if (!apiKey) throw new Error("Missing Gemini API Key");
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+   const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `${context}\n\nUser Question: ${prompt}\n\nPlease provide a helpful, friendly, and practical response focused on weather planning.`,
-                  },
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              topK: 40,
-              topP: 0.95,
-              maxOutputTokens: 500,
-            },
-          }),
-        }
-      );
+          parts: [
+            {
+              text: `${context}
 
+User Question: ${prompt}
+
+🧭 Guidelines:
+- Keep responses under **6-7 lines**.
+- Focus on practical and clear weather planning advice.
+- Avoid repetition or lengthy explanations.
+- Bold the highlighted text that is neccessary
+- Always end with a short concluding line.`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.6,
+        topK: 40,
+        topP: 0.9,
+        maxOutputTokens: 220, // ✅ shorter, ensures complete message
+      },
+    }),
+  }
+);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`API Error ${response.status}: ${errorText}`);
@@ -241,7 +250,7 @@ Focus on actionable advice, encouragement, and weather risk mitigation.`;
       icon={<Sparkles className="h-5 w-5" />}
       className="z-40"
     >
-      <ExpandableChatHeader className="flex-col text-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 py-3">
+      <ExpandableChatHeader className=" flex-col text-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 py-3">
         <div className="flex items-center justify-center space-x-1.5">
           <Bot className="h-5 w-5 text-blue-600" />
           <h1 className="text-lg font-semibold text-gray-800">
@@ -254,7 +263,7 @@ Focus on actionable advice, encouragement, and weather risk mitigation.`;
         </p>
       </ExpandableChatHeader>
 
-      <ExpandableChatBody className="bg-gray-50">
+      <ExpandableChatBody className="bg-zinc-100">
         <ChatMessageList>
           {messages.map((message) => (
             <ChatBubble
@@ -265,16 +274,21 @@ Focus on actionable advice, encouragement, and weather risk mitigation.`;
                 className="h-7 w-7 shrink-0"
                 fallback={message.sender === "user" ? "👤" : "🤖"}
               />
-              <ChatBubbleMessage
-                variant={message.sender === "user" ? "sent" : "received"}
-                className={
-                  message.sender === "ai"
-                    ? "bg-white border border-gray-200 text-gray-800 whitespace-pre-wrap"
-                    : ""
-                }
-              >
-                {message.content}
-              </ChatBubbleMessage>
+             <ChatBubbleMessage
+  variant={message.sender === "user" ? "sent" : "received"}
+  className={
+    message.sender === "ai"
+      ? "bg-white border border-gray-200 text-gray-800 whitespace-pre-wrap prose prose-sm max-w-none dark:prose-invert"
+      : ""
+  }
+>
+  {message.sender === "ai" ? (
+    <ReactMarkdown>{message.content}</ReactMarkdown>
+  ) : (
+    message.content
+  )}
+</ChatBubbleMessage>
+
             </ChatBubble>
           ))}
 
@@ -287,13 +301,13 @@ Focus on actionable advice, encouragement, and weather risk mitigation.`;
 
           {messages.length === 1 && (
             <div className="px-3 py-1.5">
-              <p className="text-xs text-gray-500 mb-1.5">💡 Quick suggestions:</p>
+              <p className="text-sm h-6 text-gray-500 mb-1.5">💡 Quick suggestions:</p>
               <div className="grid grid-cols-1 gap-1.5">
                 {quickSuggestions.map((suggestion, index) => (
                   <button
                     key={index}
                     onClick={() => handleQuickSuggestion(suggestion)}
-                    className="text-left text-xs bg-white hover:bg-blue-50 border border-gray-200 rounded-md px-2.5 py-1.5 transition-colors"
+                    className="text-left text-sm h-9 bg-white hover:bg-blue-50 border border-gray-200 rounded-md px-2.5 py-1.5 transition-colors"
                   >
                     {suggestion}
                   </button>
@@ -323,7 +337,7 @@ Focus on actionable advice, encouragement, and weather risk mitigation.`;
               className="ml-auto gap-1 bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1.5"
               disabled={!input.trim() || isLoading}
             >
-              {isLoading ? "Thinking..." : "Send"}
+              {isLoading ? "Sending..." : "Send"}
               <CornerDownLeft className="size-3" />
             </Button>
           </div>

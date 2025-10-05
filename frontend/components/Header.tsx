@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ShinyButton } from "@/components/ui/shiny-button";
 import Link from 'next/link';
-
+import Image from 'next/image';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   const links = [
+    { label: 'Home', href: '/' },
     { label: 'About', href: '/#about' },
      { label: 'Features', href: '/#features' },
     { label: 'How It Works', href: '/#workflow' },
@@ -30,8 +31,8 @@ export default function Header() {
         {/* Logo / Left side */}
                   <Link href={'/'}>
         <div className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
-          <Grid2x2PlusIcon className="size-5" />
-          <p className="font-mono text-base font-bold">Asme</p>
+          <Image src={'/kalkia-logo.png'} alt={'Kalkia Logo'} width={20} height={20} />
+          <p className="font-mono text-base font-bold">Kalkia</p>
         </div>
                   </Link>
 

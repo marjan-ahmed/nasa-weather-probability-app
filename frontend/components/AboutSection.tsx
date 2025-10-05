@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function AboutSection() {
   return (
@@ -10,7 +11,6 @@ export function AboutSection() {
       className="relative min-h-screen overflow-hidden py-20 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: "#001829" }}
     >
-      {/* Blurred SVG Background */}
       <div
         className="absolute inset-0"
         style={{
@@ -86,14 +86,16 @@ export function AboutSection() {
                 </div>
                 <div>
                   <div className="text-white font-bold text-lg">NASA POWER</div>
-                  <div className="text-gray-400 text-sm">Satellite Data Source</div>
+                  <div className="text-gray-400 text-sm">MERRA-2 Data</div>
                 </div>
               </div>
             </div>
 
+          <Link href={'/dashboard'}>
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 shadow-lg">
               Start Analysis
             </Button>
+          </Link>
           </div>
 
           {/* Right Phone Mockup */}
