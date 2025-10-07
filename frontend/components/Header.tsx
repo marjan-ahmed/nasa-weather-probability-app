@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { ShinyButton } from "@/components/ui/shiny-button";
 import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -71,7 +72,9 @@ export default function Header() {
 
         {/* Right side (Buttons + Mobile Menu) */}
         <div className="flex items-center gap-2">
+<Link href={'/dashboard'}>
           <ShinyButton className='hidden sm:block'>Get Started</ShinyButton>
+</Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <Button
               size="icon"
