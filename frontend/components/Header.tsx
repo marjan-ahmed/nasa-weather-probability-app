@@ -117,7 +117,9 @@ export default function Header() {
                 ))}
               </div>
               <SheetFooter>
+<Link href={'/dashboard'}>
                 <ShinyButton>Get Started</ShinyButton>
+</Link>
               </SheetFooter>
             </SheetContent>
           </Sheet>
