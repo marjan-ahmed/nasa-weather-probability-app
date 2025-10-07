@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { ShinyButton } from "@/components/ui/shiny-button";
 import Link from 'next/link';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
