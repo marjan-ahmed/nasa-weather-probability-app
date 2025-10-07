@@ -199,9 +199,19 @@ export default function Dashboard() {
     setSamplesTable([]);
 
     try {
-      const start = "19810101";
+
+      const getTodayDate = (): string => {
       const today = new Date();
-      const end = today.toISOString().slice(0, 10).replace(/-/g, "");
+      const year = today.getFullYear();
+      const month = (today.getMonth() + 1).toString().padStart(2, "0");
+      const day = today.getDate().toString().padStart(2, "0");
+      return `${year}${month}${day}`;
+
+      }
+
+      const start = "19810101";
+      const end = getTodayDate();
+      console.log(end)
       const params = ["T2M_MAX", "T2M_MIN", "PRECTOTCORR", "WS10M", "RH2M"].join(",");
       const url = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=${params}&community=AG&longitude=${selectedLocation.lng}&latitude=${selectedLocation.lat}&start=${start}&end=${end}&format=JSON`;
 
@@ -209,8 +219,31 @@ export default function Dashboard() {
       if (!resp.ok) throw new Error("NASA POWER API request failed.");
       const data = await resp.json();
       
-      const { T2M_MAX = {}, T2M_MIN = {}, PRECTOTCORR = {}, WS10M = {}, RH2M = {} } = data.properties.parameter;
-      const allKeys = Array.from(new Set([...Object.keys(T2M_MAX), ...Object.keys(T2M_MIN), ...Object.keys(PRECTOTCORR), ...Object.keys(WS10M), ...Object.keys(RH2M)])).sort();
+      let { T2M_MAX = {}, T2M_MIN = {}, PRECTOTCORR = {}, WS10M = {}, RH2M = {} } = data.properties.parameter;
+
+      const removeLastThree = (obj: Record<string, number>) => {
+      const keys = Object.keys(obj).sort();
+      const trimmed = keys.slice(0, -3); // remove last 3
+      const newObj: Record<string, number> = {};
+      trimmed.forEach((k) => (newObj[k] = obj[k]));
+      return newObj;
+    };
+
+    T2M_MAX = removeLastThree(T2M_MAX);
+    T2M_MIN = removeLastThree(T2M_MIN);
+    PRECTOTCORR = removeLastThree(PRECTOTCORR);
+    WS10M = removeLastThree(WS10M);
+    RH2M = removeLastThree(RH2M);
+
+    const allKeys = Array.from(
+      new Set([
+        ...Object.keys(T2M_MAX),
+        ...Object.keys(T2M_MIN),
+        ...Object.keys(PRECTOTCORR),
+        ...Object.keys(WS10M),
+        ...Object.keys(RH2M),
+      ])
+    ).sort();
 
       const md = getMonthDay(selectedDate);
       if (!md) throw new Error("Couldn't parse selected date.");
@@ -388,38 +421,52 @@ export default function Dashboard() {
 
     {/* RIGHT — Map */}
     <div
-      className={`flex justify-center items-center w-full lg:w-2/3 ${
-        loading ? "opacity-30" : "opacity-100"
-      }`}
+  className={`flex justify-center items-center w-full lg:w-2/3 ${
+    loading ? "opacity-30" : "opacity-100"
+  }`}
+>
+  <div
+    className="
+      relative 
+      w-full 
+      h-[300px] 
+      sm:h-[400px] 
+      md:h-[500px] 
+      lg:w-[900px] 
+      lg:h-[550px] 
+      rounded-xl 
+      overflow-hidden 
+      shadow-md
+    "
+  >
+    <GoogleMap
+      key={`${selectedLocation.lat ?? 0}-${selectedLocation.lng ?? 0}`}
+      center={{
+        lat: selectedLocation.lat ?? 30.3753,
+        lng: selectedLocation.lng ?? 69.3451,
+      }}
+      zoom={selectedLocation.lat ? 8 : 4}
+      mapContainerStyle={{ width: "100%", height: "100%" }}
+      onLoad={handleMapLoad}
+      options={{
+        mapTypeControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+        gestureHandling: "greedy",
+      }}
     >
-      <div className="relative w-[900px] h-[550px] rounded-lg overflow-hidden shadow-md">
-        <GoogleMap
-          key={`${selectedLocation.lat ?? 0}-${selectedLocation.lng ?? 0}`}
-          center={{
-            lat: selectedLocation.lat ?? 30.3753,
-            lng: selectedLocation.lng ?? 69.3451,
+      {selectedLocation.lat && selectedLocation.lng && (
+        <Marker
+          position={{
+            lat: selectedLocation.lat,
+            lng: selectedLocation.lng,
           }}
-          zoom={selectedLocation.lat ? 8 : 4}
-          mapContainerStyle={{ width: "100%", height: "100%" }}
-          onLoad={handleMapLoad}
-          options={{
-            mapTypeControl: false,
-            fullscreenControl: false,
-            streetViewControl: false,
-            gestureHandling: "greedy",
-          }}
-        >
-          {selectedLocation.lat && selectedLocation.lng && (
-            <Marker
-              position={{
-                lat: selectedLocation.lat,
-                lng: selectedLocation.lng,
-              }}
-            />
-          )}
-        </GoogleMap>
-      </div>
-    </div>
+        />
+      )}
+    </GoogleMap>
+  </div>
+</div>
+
   </div>
 
   {/* Loading State */}
