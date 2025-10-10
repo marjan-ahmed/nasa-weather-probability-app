@@ -34,7 +34,7 @@ const lexend = Lexend({
 
 
 export const metadata: Metadata = {
-  title: "Kalkia - Weather Probability ",
+  title: "Kalkia - Weather Probability Checker",
   description: "AI-powered weather forecasting and probability analysis using NASA Power (MERRA-2) data",
 };
 

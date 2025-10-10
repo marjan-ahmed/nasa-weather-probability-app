@@ -71,7 +71,9 @@ export default function Header() {
 
         {/* Right side (Buttons + Mobile Menu) */}
         <div className="flex items-center gap-2">
+<Link href={'/dashboard'}>
           <ShinyButton className='hidden sm:block'>Get Started</ShinyButton>
+</Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <Button
               size="icon"
@@ -115,7 +117,9 @@ export default function Header() {
                 ))}
               </div>
               <SheetFooter>
+<Link href={'/dashboard'}>
                 <ShinyButton>Get Started</ShinyButton>
+</Link>
               </SheetFooter>
             </SheetContent>
           </Sheet>
