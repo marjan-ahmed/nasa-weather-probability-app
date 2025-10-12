@@ -835,12 +835,12 @@ function ResultsContent() {
             <div className="rounded-xl bg-blue-200 p-6 border shadow-sm mb-8">
               <h2 className="text-2xl font-semibold font-exo text-foreground mb-4">Probability Analysis Summary</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 rounded-lg bg-muted">
+                <div className="text-center p-4 rounded-lg bg-muted border-2 shadow-inner inset-2 border-blue-400">
                   <div className="text-3xl font-bold font-mono text-foreground">{weatherData.yearsSampled}</div>
                   <div className="text-sm text-muted-foreground font-lexend">Years of Historical Data</div>
                   <div className="text-xs text-muted-foreground font-lexend mt-1">1981 - 2025</div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-muted">
+                <div className="text-center p-4 rounded-lg bg-muted border-2 shadow-inner inset-2 border-blue-400">
                   <div className="text-3xl font-bold font-mono text-foreground">
                     {Math.max(...Object.values(weatherData.probabilities)).toFixed(1)}%
                   </div>
@@ -857,7 +857,7 @@ function ResultsContent() {
                       .replace(/^./, (str) => str.toUpperCase())}
                   </div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-muted">
+                <div className="text-center p-4 rounded-lg bg-muted border-2 shadow-inner inset-2 border-blue-400">
                   <div className="text-3xl font-mono font-bold text-foreground">
                     {Object.values(weatherData.counts).reduce((a, b) => a + b, 0)}
                   </div>
