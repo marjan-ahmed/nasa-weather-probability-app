@@ -832,7 +832,7 @@ function ResultsContent() {
 
             {/* Summary Statistics Section */}
             {/* tokenized card/container styles for summary section */}
-            <div className="rounded-xl bg-blue-200 p-6 border shadow-sm mb-8">
+            <div className="rounded-xl bg-blue-100 p-6 border shadow-sm mb-8">
               <h2 className="text-2xl font-semibold font-exo text-foreground mb-4">Probability Analysis Summary</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 rounded-lg bg-muted border-2 shadow-inner inset-2 border-blue-400">
