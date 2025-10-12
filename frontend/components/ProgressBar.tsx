@@ -87,7 +87,7 @@ export function ProgressBar({ label, percentage, color = "bg-primary", icon: Ico
   const pct = Math.max(0, Math.min(1, percentage)) * 100
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground p-4">
+    <div className="rounded-lg border-2 border-[#63e6c7] bg-card text-card-foreground p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {Icon ? <Icon className="h-4 w-4 text-muted-foreground" /> : null}
