@@ -769,7 +769,7 @@ function ResultsContent() {
   return (
     <>
       {/* main wrapper uses semantic tokens instead of gradient background */}
-      <div className="min-h-screen bg-blue-100/80">
+      <div className="min-h-screen bg-blue-50">
         {/* Header Section */}
         <div className="pt-24 pb-8 px-4">
           <div className="max-w-7xl mx-auto">
