@@ -769,7 +769,7 @@ function ResultsContent() {
   return (
     <>
       {/* main wrapper uses semantic tokens instead of gradient background */}
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-blue-100/80">
         {/* Header Section */}
         <div className="pt-24 pb-8 px-4">
           <div className="max-w-7xl mx-auto">
@@ -832,7 +832,7 @@ function ResultsContent() {
 
             {/* Summary Statistics Section */}
             {/* tokenized card/container styles for summary section */}
-            <div className="bg-card rounded-xl p-6 border shadow-sm mb-8">
+            <div className="rounded-xl bg-blue-200 p-6 border shadow-sm mb-8">
               <h2 className="text-2xl font-semibold font-exo text-foreground mb-4">Probability Analysis Summary</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 rounded-lg bg-muted">
