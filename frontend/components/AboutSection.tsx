@@ -91,11 +91,12 @@ export function AboutSection() {
               </div>
             </div>
 
-          <Link href={'/dashboard'}>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 shadow-lg">
-              Start Analysis
+            <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg font-medium rounded-lg transition-all duration-300 shadow-lg">
+              <Link href={'/dashboard'}>
+                Start Analysis
+              </Link>
+
             </Button>
-          </Link>
           </div>
 
           {/* Right Phone Mockup */}
