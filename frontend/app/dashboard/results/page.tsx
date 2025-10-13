@@ -91,11 +91,43 @@ const CHART_COLORS = {
   veryUncomfortable: "#f59e0b",
 }
 
+// Custom hook for responsive breakpoints
+function useResponsive() {
+  const [screenSize, setScreenSize] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+  })
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth
+      setScreenSize({
+        isMobile: width < 640,
+        isTablet: width >= 640 && width < 1024,
+        isDesktop: width >= 1024,
+      })
+    }
+
+    // Set initial size
+    checkScreenSize()
+
+    // Add event listener
+    window.addEventListener('resize', checkScreenSize)
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
+  return screenSize
+}
+
 function ResultsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
   const [loading, setLoading] = useState(true)
+  const { isMobile, isTablet, isDesktop } = useResponsive()
 
   useEffect(() => {
     try {
@@ -771,81 +803,85 @@ function ResultsContent() {
       {/* main wrapper uses semantic tokens instead of gradient background */}
       <div className="min-h-screen bg-blue-50">
         {/* Header Section */}
-        <div className="pt-24 pb-8 px-4">
+        <div className="pt-16 sm:pt-20 lg:pt-24 pb-6 sm:pb-8 px-3 sm:px-4 lg:px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-              <div>
-                <h1 className="text-4xl font-bold font-exo text-foreground mb-2 text-balance">Weather Analysis Results</h1>
-                {/* unify header meta text color with tokens */}
-                <div className="flex text-xs sm:text-sm flex-wrap items-center gap-4 text-muted-foreground font-lexend">
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4" />
-                    <span>{weatherData.location}</span>
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 sm:mb-8">
+              <div className="mb-4 lg:mb-0">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-exo text-foreground mb-2 text-balance">
+                  Weather Analysis Results
+                </h1>
+                <div className="flex text-xs sm:text-sm flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground font-lexend">
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="truncate max-w-[200px] sm:max-w-none">{weatherData.location}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4" />
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span>{weatherData.date}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="w-4 h-4" />
-                    <span className="font-mono">{weatherData.yearsSampled}</span> <span>years of data</span>
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="font-mono">{weatherData.yearsSampled}</span> 
+                    <span className="hidden sm:inline">years of data</span>
+                    <span className="sm:hidden">yrs</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
-                <Button onClick={() => router.push("/dashboard")} variant="outline">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
-                <Button onClick={shareResults} variant="outline">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
+              <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+                <Button onClick={() => router.push("/dashboard")} variant="outline" size={isMobile ? "sm" : "default"}>
+                  <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  {isMobile ? "Back" : "Back"}
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button>
-                      <Download className="w-4 h-4 mr-2" />
+                    <Button size={isMobile ? "sm" : "default"}>
+                      <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                       Export
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuContent align="end" className="w-56 sm:w-64">
                     <DropdownMenuLabel>Analysis Reports</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={exportToCSV}>
                       <FileSpreadsheet className="w-4 h-4 mr-2" />
-                      Export CSV Report
+                      Export CSV 
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={exportToJSON}>
                       <FileJson className="w-4 h-4 mr-2" />
-                      Export JSON Report
+                      Export JSON 
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={exportToPDF}>
                       <FileText className="w-4 h-4 mr-2" />
-                      Export PDF Report
+                      Export PDF 
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <Button onClick={shareResults} variant="outline" size={isMobile ? "sm" : "default"}>
+                  <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  Share
+                </Button>
               </div>
             </div>
 
             {/* Summary Statistics Section */}
-            {/* tokenized card/container styles for summary section */}
-            <div className="rounded-xl bg-blue-100 p-6 border shadow-sm mb-8">
-              <h2 className="text-2xl font-semibold font-exo text-foreground mb-4">Probability Analysis Summary</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300">
-                  <div className="text-3xl font-bold font-mono text-foreground">{weatherData.yearsSampled}</div>
-                  <div className="text-sm text-muted-foreground font-lexend">Years of Historical Data</div>
+            <div className="rounded-xl bg-blue-100 p-3 sm:p-4 lg:p-6 border shadow-sm mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold font-exo text-foreground mb-3 sm:mb-4">
+                Probability Analysis Summary
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                <div className="text-center p-3 sm:p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300">
+                  <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">{weatherData.yearsSampled}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground font-lexend">Years of Historical Data</div>
                   <div className="text-xs text-muted-foreground font-lexend mt-1">1981 - 2025</div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300">
-                  <div className="text-3xl font-bold font-mono text-foreground">
-                    {Math.max(...Object.values(weatherData.probabilities)).toFixed(1)}%
+                <div className="text-center p-3 sm:p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300">
+                  <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">
+                    {(Math.max(...Object.values(weatherData.probabilities)) * 100).toFixed(1)}%
                   </div>
-                  <div className="text-sm text-muted-foreground font-lexend">Highest Probability</div>
-                  <div className="text-xs text-muted-foreground font-lexend mt-1">
+                  <div className="text-xs sm:text-sm text-muted-foreground font-lexend">Highest Probability</div>
+                  <div className="text-xs text-muted-foreground font-lexend mt-1 truncate">
                     {Object.entries(weatherData.probabilities)
                       .reduce((a, b) =>
                         weatherData.probabilities[a[0] as keyof typeof weatherData.probabilities] >
@@ -857,11 +893,11 @@ function ResultsContent() {
                       .replace(/^./, (str) => str.toUpperCase())}
                   </div>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300">
-                  <div className="text-3xl font-mono font-bold text-foreground">
+                <div className="text-center p-3 sm:p-4 rounded-lg bg-white border-2 shadow-inner inset-2 border-blue-300 sm:col-span-2 lg:col-span-1">
+                  <div className="text-2xl sm:text-3xl font-mono font-bold text-foreground">
                     {Object.values(weatherData.counts).reduce((a, b) => a + b, 0)}
                   </div>
-                  <div className="text-sm text-muted-foreground font-lexend">Total Extreme Events</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground font-lexend">Total Extreme Events</div>
                   <div className="text-xs text-muted-foreground font-lexend mt-1">Across all categories</div>
                 </div>
               </div>
@@ -869,38 +905,37 @@ function ResultsContent() {
 
             {/* Stable Weather Message - Show when all probabilities are 0% */}
             {Object.values(weatherData.probabilities).every(prob => prob === 0) && (
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-8 border border-green-200 dark:border-green-800 shadow-sm mb-8">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-4 sm:p-6 lg:p-8 border border-green-200 dark:border-green-800 shadow-sm mb-6 sm:mb-8">
                 <div className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                      <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <div className="flex justify-center mb-3 sm:mb-4">
+                    <div className="bg-green-100 dark:bg-green-900/30 p-2 sm:p-3 rounded-full">
+                      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold font-exo text-green-800 dark:text-green-200 mb-2">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold font-exo text-green-800 dark:text-green-200 mb-2">
                     Excellent Weather Conditions Expected! 🌤️
                   </h3>
-                  <p className="text-lg font-lexend text-green-700 dark:text-green-300 mb-4">
+                  <p className="text-sm sm:text-base lg:text-lg font-lexend text-green-700 dark:text-green-300 mb-3 sm:mb-4">
                     The weather is predicted to be stable and comfortable for your planned date.
                   </p>
-                  <div className="bg-white dark:bg-gray-800/50 rounded-lg p-4 max-w-2xl mx-auto">
-                    <p className="text-green-800 dark:text-green-200 text-sm font-lexend">
+                  <div className="bg-white dark:bg-gray-800/50 rounded-lg p-3 sm:p-4 max-w-2xl mx-auto">
+                    <p className="text-green-800 dark:text-green-200 text-xs sm:text-sm font-lexend">
                       <strong>Based on <span className="font-mono">{weatherData.yearsSampled}</span> years of historical data</strong>, there's a <span className="font-mono">0%</span> probability of extreme weather conditions (very hot, very cold, very windy, very wet, or uncomfortably humid weather) on this date. This makes it an ideal time for outdoor events and activities.
                     </p>
                   </div>
-                  <div className="mt-6 flex flex-wrap justify-center gap-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                  <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-1 sm:gap-2">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                       ✓ Temperature: Comfortable
                     </span>
-                    <span className="inline-flex items-
-                    center px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                       ✓ Wind: Calm
                     </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                       ✓ Rain: Unlikely
                     </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                    <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium font-lexend bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                       ✓ Humidity: Pleasant
                     </span>
                   </div>
@@ -1046,35 +1081,44 @@ function ResultsContent() {
             {/* CHANGE END */}
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8">
               {/* Probability Bar Chart */}
-              {/* ... existing code ... */}
-              <div className="bg-card rounded-xl p-6 border shadow-sm">
-                <h2 className="text-xl font-semibold font-exo mb-4 text-foreground">Weather Condition Probabilities</h2>
+              <div className="bg-card rounded-xl p-3 sm:p-4 lg:p-6 border shadow-sm">
+                <h2 className="text-lg sm:text-xl font-semibold font-exo mb-4 text-foreground">Weather Condition Probabilities</h2>
                 <ChartContainer
-                  className="h-[300px]"
+                  className="h-[250px] sm:h-[300px] lg:h-[350px] w-full"
                   config={{
                     prob: { label: "Probability", color: "hsl(var(--chart-2))" },
                   }}
                 >
-                  <BarChart data={probabilityData}>
+                  <BarChart data={probabilityData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                    <YAxis label={{ value: "Probability (%)", angle: -90, position: "insideLeft" }} />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={80}
+                      interval={0}
+                      fontSize={12}
+                      tick={{ fontSize: 10, dy: 5 }}
+                    />
+                    <YAxis 
+                      label={{ value: "Probability (%)", angle: -90, position: "insideLeft" }}
+                      fontSize={12}
+                      tick={{ fontSize: 10 }}
+                    />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <ChartLegend />
                     <Bar dataKey="percentage" fill="var(--color-prob)" isAnimationActive animationDuration={500} />
                   </BarChart>
                 </ChartContainer>
               </div>
-              {/* ... existing code ... */}
 
               {/* Pie Chart */}
-              {/* CHANGE START */}
-              <div className="bg-card rounded-xl p-6 border shadow-sm">
-                <h2 className="text-xl font-semibold mb-4 text-foreground">Condition Distribution</h2>
+              <div className="bg-card rounded-xl p-3 sm:p-4 lg:p-6 border shadow-sm">
+                <h2 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">Condition Distribution</h2>
                 <ChartContainer
-                  className="h-[300px]"
+                  className="h-[250px] sm:h-[300px] lg:h-[350px] w-full"
                   config={{
                     veryHot: { label: "Very Hot", color: CHART_COLORS.veryHot },
                     veryCold: { label: "Very Cold", color: CHART_COLORS.veryCold },
@@ -1092,11 +1136,11 @@ function ResultsContent() {
                       nameKey="name"
                       cx="50%"
                       cy="50%"
-                      innerRadius={48}
-                      outerRadius={88}
+                      innerRadius={isMobile ? 30 : isTablet ? 40 : 48}
+                      outerRadius={isMobile ? 70 : isTablet ? 80 : 88}
                       isAnimationActive
                       animationDuration={500}
-                      label={({ name, percentage }) => `${name}: ${(percentage as number).toFixed(1)}%`}
+                      label={!isMobile ? ({ name, percentage }) => `${name}: ${(percentage as number).toFixed(1)}%` : false}
                     >
                       {probabilityData.map((entry, i) => (
                         <Cell key={i} fill={entry.color} />
@@ -1105,30 +1149,28 @@ function ResultsContent() {
                   </PieChart>
                 </ChartContainer>
               </div>
-              {/* CHANGE END */}
             </div>
 
             {/* Historical Trend Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8">
               {/* Temperature Trend */}
-              {/* CHANGE START */}
-              <div className="bg-card rounded-xl  border shadow-sm">
-                <div className="p-6">
-                <h2 className="text-xl font-semibold font-exo mb-4 text-foreground">Historical Temperature Trend</h2>
+              <div className="bg-card rounded-xl border shadow-sm">
+                <div className="p-3 sm:p-4 lg:p-6">
+                  <h2 className="text-lg sm:text-xl font-semibold font-exo mb-4 text-foreground">Historical Temperature Trend</h2>
                 </div>
                 <ChartContainer
                   config={{
                     tmax: { label: "Max Temperature", color: "#ef4444" },
                     tmin: { label: "Min Temperature", color: "#3b82f6" },
                   }}
-                  className="min-h-[350px]"
+                  className="h-[300px] sm:h-[350px] lg:h-[400px] w-full px-2 sm:px-4"
                 >
                   <LineChart
                     data={trendData}
                     margin={{
                       top: 20,
-                      left: 12,
-                      right: 12,
+                      left: isMobile ? 8 : 12,
+                      right: isMobile ? 8 : 12,
                       bottom: 10,
                     }}
                   >
@@ -1138,13 +1180,18 @@ function ResultsContent() {
                       tickMargin={8}
                       axisLine={false}
                       tickFormatter={(value) => value.toString()}
+                      fontSize={isMobile ? 10 : 12}
+                      tick={{ fontSize: isMobile ? 9 : 11 }}
                     />
                     <YAxis
                       label={{
                         value: "Temperature (°C)",
                         angle: -90,
                         position: "insideLeft",
+                        style: { fontSize: isMobile ? 10 : 12 },
                       }}
+                      fontSize={isMobile ? 10 : 12}
+                      tick={{ fontSize: isMobile ? 9 : 11 }}
                     />
                     <ChartTooltip
                       content={
@@ -1159,23 +1206,23 @@ function ResultsContent() {
                     />
                     <ChartLegend
                       content={
-                        <div className="flex gap-4">
-                          {Object.keys(trendData[0]).map((key) => {
+                        <div className="flex flex-wrap gap-2 sm:gap-4 justify-center">
+                          {Object.keys(trendData[0] || {}).map((key) => {
                             if (key === "year" || key === "rain" || key === "wind") return null
                             const label = key === "tmax" ? "Max Temperature" : "Min Temperature"
                             const color = key === "tmax" ? "#ef4444" : "#3b82f6"
                             return (
-                              <div key={key} className="flex items-center gap-2">
+                              <div key={key} className="flex items-center gap-1 sm:gap-2">
                                 <span
                                   style={{
                                     display: "inline-block",
-                                    width: 12,
-                                    height: 12,
+                                    width: isMobile ? 8 : 12,
+                                    height: isMobile ? 8 : 12,
                                     borderRadius: "50%",
                                     background: color,
                                   }}
                                 />
-                                <span className="text-xs">{label}</span>
+                                <span className="text-xs sm:text-sm">{label}</span>
                               </div>
                             )
                           })}
@@ -1186,29 +1233,27 @@ function ResultsContent() {
                       type="monotone"
                       dataKey="tmax"
                       stroke="#ef4444"
-                      strokeWidth={2}
-                      dot={{ r: 2 }}
+                      strokeWidth={isMobile ? 1.5 : 2}
+                      dot={{ r: isMobile ? 1 : 2 }}
                       connectNulls={false}
                     />
                     <Line
                       type="monotone"
                       dataKey="tmin"
                       stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ r: 2 }}
+                      strokeWidth={isMobile ? 1.5 : 2}
+                      dot={{ r: isMobile ? 1 : 2 }}
                       connectNulls={false}
                     />
                   </LineChart>
                 </ChartContainer>
               </div>
-              {/* CHANGE END */}
 
               {/* Precipitation and Wind Trend */}
-              {/* CHANGE START */}
-              <div className="bg-card rounded-xl p-6 border shadow-sm">
-                <h2 className="text-xl font-semibold font-exo mb-4 text-foreground">Precipitation & Wind Trend</h2>
+              <div className="bg-card rounded-xl p-3 sm:p-4 lg:p-6 border shadow-sm">
+                <h2 className="text-lg sm:text-xl font-semibold font-exo mb-4 text-foreground">Precipitation & Wind Trend</h2>
                 <ChartContainer
-                  className="h-[350px]"
+                  className="h-[300px] sm:h-[350px] lg:h-[400px] w-full"
                   config={{
                     rain: { label: "Precipitation", color: "#06b6d4" },
                     wind: { label: "Wind Speed", color: "#6b7280" },
@@ -1218,23 +1263,44 @@ function ResultsContent() {
                     data={trendData}
                     margin={{
                       top: 5,
-                      right: 30,
-                      left: 20,
+                      right: isMobile ? 20 : 30,
+                      left: isMobile ? 15 : 20,
                       bottom: 5,
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                    <XAxis dataKey="year" domain={["dataMin", "dataMax"]} type="number" scale="linear" />
+                    <XAxis 
+                      dataKey="year" 
+                      domain={["dataMin", "dataMax"]} 
+                      type="number" 
+                      scale="linear"
+                      fontSize={isMobile ? 10 : 12}
+                      tick={{ fontSize: isMobile ? 9 : 11 }}
+                    />
                     <YAxis
                       yAxisId="left"
-                      label={{ value: "Precipitation (mm)", angle: -90, position: "insideLeft" }}
+                      label={{ 
+                        value: isMobile ? "Rain (mm)" : "Precipitation (mm)", 
+                        angle: -90, 
+                        position: "insideLeft",
+                        style: { fontSize: isMobile ? 9 : 12 }
+                      }}
                       domain={[0, "dataMax + 10"]}
+                      fontSize={isMobile ? 10 : 12}
+                      tick={{ fontSize: isMobile ? 9 : 11 }}
                     />
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      label={{ value: "Wind Speed (m/s)", angle: 90, position: "insideRight" }}
+                      label={{ 
+                        value: "Wind (m/s)", 
+                        angle: 90, 
+                        position: "insideRight",
+                        style: { fontSize: isMobile ? 9 : 12 }
+                      }}
                       domain={[0, "dataMax + 5"]}
+                      fontSize={isMobile ? 10 : 12}
+                      tick={{ fontSize: isMobile ? 9 : 11 }}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <ChartLegend />
@@ -1243,8 +1309,8 @@ function ResultsContent() {
                       type="monotone"
                       dataKey="rain"
                       stroke="var(--color-rain)"
-                      strokeWidth={2}
-                      dot={{ r: 2 }}
+                      strokeWidth={isMobile ? 1.5 : 2}
+                      dot={{ r: isMobile ? 1 : 2 }}
                       isAnimationActive
                       animationDuration={500}
                       connectNulls={false}
@@ -1254,8 +1320,8 @@ function ResultsContent() {
                       type="monotone"
                       dataKey="wind"
                       stroke="var(--color-wind)"
-                      strokeWidth={2}
-                      dot={{ r: 2 }}
+                      strokeWidth={isMobile ? 1.5 : 2}
+                      dot={{ r: isMobile ? 1 : 2 }}
                       isAnimationActive
                       animationDuration={500}
                       connectNulls={false}
@@ -1263,123 +1329,207 @@ function ResultsContent() {
                   </LineChart>
                 </ChartContainer>
               </div>
-              {/* CHANGE END */}
             </div>
 
             {/* Analysis Summary Table */}
-            {/* CHANGE START */}
-            <div className="bg-card rounded-xl p-6 border shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">
+            <div className="bg-card rounded-xl p-3 sm:p-4 lg:p-6 border shadow-sm">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">
                 Analysis Summary & Planning Recommendations
               </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-border">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Weather Condition
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Probability
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Risk Level
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Historical Count
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Planning Recommendation
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-card divide-y divide-border">
-                    {Object.entries(weatherData.probabilities)
-                      .sort(([, a], [, b]) => b - a)
-                      .map(([key, probability], index) => {
-                        const count = weatherData.counts[key as keyof typeof weatherData.counts]
-                        const percentage = (probability * 100).toFixed(1)
-                        let riskLevel = "Low"
-                        let riskColor = "text-green-600 bg-green-50"
-                        let recommendation = ""
+              <div className="overflow-x-auto -mx-3 sm:mx-0">
+                <div className="inline-block min-w-full align-middle">
+                  <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                    <table className="min-w-full divide-y divide-border">
+                      <thead className="bg-muted">
+                        <tr>
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            Condition
+                          </th>
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            Probability
+                          </th>
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            Risk
+                          </th>
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">
+                            Count
+                          </th>
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider hidden lg:table-cell">
+                            Recommendation
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-card divide-y divide-border">
+                        {Object.entries(weatherData.probabilities)
+                          .sort(([, a], [, b]) => b - a)
+                          .map(([key, probability], index) => {
+                            const count = weatherData.counts[key as keyof typeof weatherData.counts]
+                            const percentage = (probability * 100).toFixed(1)
+                            let riskLevel = "Low"
+                            let riskColor = "text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950/30"
+                            let recommendation = ""
 
-                        if (probability >= 0.3) {
-                          riskLevel = "High"
-                          riskColor = "text-red-600 bg-red-50"
-                        } else if (probability >= 0.15) {
-                          riskLevel = "Medium"
-                          riskColor = "text-yellow-600 bg-yellow-50"
-                        }
+                            if (probability >= 0.3) {
+                              riskLevel = "High"
+                              riskColor = "text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/30"
+                            } else if (probability >= 0.15) {
+                              riskLevel = "Medium"
+                              riskColor = "text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-950/30"
+                            }
 
-                        const conditionName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+                            const conditionName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+                            const shortConditionName = conditionName.replace("Very ", "").replace("Uncomfortable", "Humid")
 
-                        switch (key) {
-                          case "veryHot":
-                            recommendation =
-                              probability >= 0.2
-                                ? "Consider indoor alternatives, early morning events, or provide cooling stations"
-                                : "Generally safe for outdoor activities"
-                            break
-                          case "veryCold":
-                            recommendation =
-                              probability >= 0.2
-                                ? "Plan for heating, warm clothing distribution, and shelter options"
-                                : "Cold weather unlikely to be a concern"
-                            break
-                          case "veryWet":
-                            recommendation =
-                              probability >= 0.2
-                                ? "Secure indoor backup venues and waterproof equipment covers"
-                                : "Precipitation unlikely to disrupt plans"
-                            break
-                          case "veryWindy":
-                            recommendation =
-                              probability >= 0.2
-                                ? "Anchor all outdoor equipment, tents, and decorations securely"
-                                : "Wind conditions should be manageable"
-                            break
-                          case "veryUncomfortable":
-                            recommendation =
-                              probability >= 0.2
-                                ? "Provide shade structures, ventilation, and hydration stations"
-                                : "Comfort levels should be acceptable"
-                            break
-                        }
+                            switch (key) {
+                              case "veryHot":
+                                recommendation =
+                                  probability >= 0.2
+                                    ? "Consider indoor alternatives, early morning events, or provide cooling stations"
+                                    : "Generally safe for outdoor activities"
+                                break
+                              case "veryCold":
+                                recommendation =
+                                  probability >= 0.2
+                                    ? "Plan for heating, warm clothing distribution, and shelter options"
+                                    : "Cold weather unlikely to be a concern"
+                                break
+                              case "veryWet":
+                                recommendation =
+                                  probability >= 0.2
+                                    ? "Secure indoor backup venues and waterproof equipment covers"
+                                    : "Precipitation unlikely to disrupt plans"
+                                break
+                              case "veryWindy":
+                                recommendation =
+                                  probability >= 0.2
+                                    ? "Anchor all outdoor equipment, tents, and decorations securely"
+                                    : "Wind conditions should be manageable"
+                                break
+                              case "veryUncomfortable":
+                                recommendation =
+                                  probability >= 0.2
+                                    ? "Provide shade structures, ventilation, and hydration stations"
+                                    : "Comfort levels should be acceptable"
+                                break
+                            }
 
-                        return (
-                          <tr key={key} className={index % 2 === 0 ? "bg-card" : "bg-muted"}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                              {conditionName}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-foreground">
-                              {percentage}%
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${riskColor}`}>
+                            return (
+                              <tr key={key} className={index % 2 === 0 ? "bg-card" : "bg-muted/50"}>
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium text-foreground">
+                                  <div className="flex flex-col">
+                                    <span className="sm:hidden">{shortConditionName}</span>
+                                    <span className="hidden sm:inline">{conditionName}</span>
+                                  </div>
+                                </td>
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-bold text-foreground">
+                                  {percentage}%
+                                </td>
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                  <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium ${riskColor}`}>
+                                    {riskLevel}
+                                  </span>
+                                </td>
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-muted-foreground hidden sm:table-cell">
+                                  <div className="flex flex-col">
+                                    <span className="font-mono">{count}</span>
+                                    <span className="text-xs opacity-70">/ {weatherData.yearsSampled} yrs</span>
+                                  </div>
+                                </td>
+                                <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-muted-foreground max-w-xs hidden lg:table-cell">
+                                  {recommendation}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                {/* Mobile-friendly cards for small screens */}
+                <div className="block lg:hidden mt-4 space-y-3">
+                  {Object.entries(weatherData.probabilities)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([key, probability]) => {
+                      const count = weatherData.counts[key as keyof typeof weatherData.counts]
+                      const percentage = (probability * 100).toFixed(1)
+                      let riskLevel = "Low"
+                      let riskColor = "text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950/30"
+                      let recommendation = ""
+
+                      if (probability >= 0.3) {
+                        riskLevel = "High"
+                        riskColor = "text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/30"
+                      } else if (probability >= 0.15) {
+                        riskLevel = "Medium"
+                        riskColor = "text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-950/30"
+                      }
+
+                      const conditionName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+
+                      switch (key) {
+                        case "veryHot":
+                          recommendation = probability >= 0.2
+                            ? "Consider indoor alternatives or cooling stations"
+                            : "Safe for outdoor activities"
+                          break
+                        case "veryCold":
+                          recommendation = probability >= 0.2
+                            ? "Plan heating and warm clothing"
+                            : "Cold weather unlikely"
+                          break
+                        case "veryWet":
+                          recommendation = probability >= 0.2
+                            ? "Have indoor backup plans"
+                            : "Rain unlikely"
+                          break
+                        case "veryWindy":
+                          recommendation = probability >= 0.2
+                            ? "Secure outdoor equipment"
+                            : "Wind manageable"
+                          break
+                        case "veryUncomfortable":
+                          recommendation = probability >= 0.2
+                            ? "Provide shade and ventilation"
+                            : "Comfort acceptable"
+                          break
+                      }
+
+                      return (
+                        <div key={key} className="bg-muted/30 rounded-lg p-3 border">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-medium text-sm text-foreground">{conditionName}</h4>
+                            <div className="text-right">
+                              <div className="font-bold text-sm text-foreground">{percentage}%</div>
+                              <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${riskColor} mt-1`}>
                                 {riskLevel}
                               </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                              {count} / {weatherData.yearsSampled} years
-                            </td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground max-w-xs">{recommendation}</td>
-                          </tr>
-                        )
-                      })}
-                  </tbody>
-                </table>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground mb-2">
+                            <span className="font-mono">{count}</span> occurrences in <span className="font-mono">{weatherData.yearsSampled}</span> years
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            <span className="font-medium">Recommendation:</span> {recommendation}
+                          </div>
+                        </div>
+                      )
+                    })}
+                </div>
               </div>
 
               {/* Overall Assessment */}
-              <div className="mt-6 p-4 bg-muted rounded-lg border">
-                <h3 className="font-semibold text-foreground mb-2">📊 Overall Assessment</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium text-foreground">Data Confidence:</span>
-                    <p className="text-muted-foreground">{weatherData.yearsSampled} years of NASA satellite data</p>
+              <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-muted/50 rounded-lg border">
+                <h3 className="font-semibold text-sm sm:text-base text-foreground mb-3">📊 Overall Assessment</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
+                  <div className="space-y-1">
+                    <span className="font-medium text-foreground block">Data Confidence:</span>
+                    <p className="text-muted-foreground">
+                      <span className="font-mono">{weatherData.yearsSampled}</span> years of NASA satellite data
+                    </p>
                   </div>
-                  <div>
-                    <span className="font-medium text-foreground">Highest Risk:</span>
+                  <div className="space-y-1">
+                    <span className="font-medium text-foreground block">Highest Risk:</span>
                     <p className="text-muted-foreground">
                       {Object.entries(weatherData.probabilities)
                         .reduce((a, b) =>
@@ -1390,11 +1540,12 @@ function ResultsContent() {
                         )[0]
                         .replace(/([A-Z])/g, " $1")
                         .replace(/^./, (str) => str.toUpperCase())}
-                      ({(Math.max(...Object.values(weatherData.probabilities)) * 100).toFixed(1)}%)
+                      <br />
+                      <span className="font-mono">({(Math.max(...Object.values(weatherData.probabilities)) * 100).toFixed(1)}%)</span>
                     </p>
                   </div>
-                  <div>
-                    <span className="font-medium text-foreground">Recommendation:</span>
+                  <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+                    <span className="font-medium text-foreground block">Recommendation:</span>
                     <p className="text-muted-foreground">
                       {Math.max(...Object.values(weatherData.probabilities)) >= 0.3
                         ? "Plan alternative arrangements"
