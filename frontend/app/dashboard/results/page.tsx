@@ -807,7 +807,7 @@ function ResultsContent() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 sm:mb-8">
               <div className="mb-4 lg:mb-0">
-                <h1 className="text-4xl bold sm:text-3xl lg:text-4xl font-bold font-exo text-foreground mb-2 text-balance">
+                <h1 className="mt-4 lg:mt-2 text-4xl bold sm:text-3xl lg:text-4xl font-bold font-exo text-foreground mb-2 text-balance">
                   Weather Analysis Results
                 </h1>
                 <div className="flex text-xs sm:text-sm flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground font-lexend">
