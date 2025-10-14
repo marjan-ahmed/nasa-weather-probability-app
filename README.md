@@ -1,17 +1,8 @@
-# 🌌 NASA Weather App
+# Kalkia - Weather Probability Checker
 
-A collaborative hackathon project built with **Next.js (Frontend)**, **FastAPI (Backend)**, and **Python Data Analysis**.  
-This app fetches and visualizes NASA weather data, provides probability analysis, and offers a responsive dashboard UI.
+#### 📌 Project description: 
+Plan outdoor events with confidence using NASA Earth observation data. Get historical weather probabilities for any location and date—from extreme heat and rainfall to wind conditions and air quality—months in advance.
 
----
-
-## 📌 Project Description
-
-The **NASA Weather App** combines multiple components:  
-
-- **Frontend (Next.js + Tailwind CSS)** → Interactive dashboard and UI.  
-- **Backend (FastAPI)** → APIs to fetch, process, and serve NASA weather data.  
-- **Data Analysis (Python, Pandas, NumPy)** → Statistical and probability calculations on weather datasets.  
 
 The goal is to create an integrated platform where different team members (Frontend, Backend, Data) can collaborate seamlessly.
 
@@ -19,13 +10,52 @@ The goal is to create an integrated platform where different team members (Front
 
 ## 🚀 Tech Stack
 
-- **Frontend**: Next.js, Tailwind CSS  
-- **Backend**: FastAPI (Python)  
-- **Data Analysis**: Python (Pandas, NumPy)  
+- **Frontend**: Next.js `14.2`, TypeScript, Tailwind CSS, ShadCN, LottieFiles (animations)
+- **Data**: [NASA Daily Power API (MERRA-2)](https://power.larc.nasa.gov/docs/services/api/temporal/daily/)
+- **Data Analysis**: Recharts, chars (from shadcn)
 - **Version Control**: Git + GitHub  
-- **Collaboration**: GitHub CLI (`gh`) or plain `git`  
 
 ---
+
+## 🌐 App Flow
+
+```
+┌──────────────────────────────┐
+│ 🏠 User enters the app       │
+│    and clicks "Get Started"  │
+└───────────────┬──────────────┘
+                │
+                v
+┌──────────────────────────────┐
+│ 📍 User enters any location  │
+│     in the world             │
+└───────────────┬──────────────┘
+                │
+                v
+┌──────────────────────────────┐
+│ 📅 User selects a date       │
+│     (up to 1 year ahead)     │
+└───────────────┬──────────────┘
+                │
+                v
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📊 Redirected to Result Page                                                 │
+│                                                                              │
+│ • View historical weather trends (1981–2025)                                 │
+│ • Interact with AI-Powered Weather Assistant                                 │
+│ • Download data as CSV or JSON                                               │
+│ • View threshold conditions:                                                 │
+│                                                                              │
+│    ☀️ Very Hot: temperature ≥ 35°C                                           │
+│    ❄️ Very Cold: temperature ≤ 5°C                                           │
+│    🌧️ Very Wet: rainfall ≥ 20 mm                                             │
+│    🌬️ Very Windy: wind speed ≥ 8 m/s                                         │
+│    😣 Very Uncomfortable: temperature ≥ 32°C AND humidity ≥ 70%              │
+│                                                                              │
+│    (≥ means “greater than or equal to”, ≤ means “less than or equal to”)     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+```
 
 ## ⚡ Getting Started
 
@@ -134,6 +164,7 @@ git push origin main          # push updated main
   ```
   
   but if you want that switched branch code should be added in your code, write the script below
+
   ```
   git pull origin main → pulls the latest changes from the owner’s main branch into their local main.
   ```
