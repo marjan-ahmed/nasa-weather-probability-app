@@ -1,6 +1,6 @@
 # Kalkia - Weather Probability Checker
 
-#### 📌 Summary: 
+### 📌 Summary: 
 We developed a weather probabilty app which can help individuals determine the weather for months in advance to plan an event safetly without risking an environmental interference. This app analyzes 44 years of data drom 1981 to 2025 and than predicts the future weather of any particular place at any particular date, telling if the weather is very hot, very cold, windy, rainy, or it is uncomfortable. It also shows graphical representation and percentage likelihood of each weather condition. Moreover, it also recommends that is the date suitable for an outdoor event ot not. We have also integrated an AI chatbot to help manage people's queries and suggest them arrangements. It is important as it can help individuals, and organizations for planning events safetly and mitigate weather risks.
 
 ## 🎥 Project Demo
@@ -58,12 +58,6 @@ We integrated an **AI-powered chatbot** that acts as a virtual event manager —
 - **Variables Analyzed:**  
   Temperature extremes, humidity levels, wind speed, rainfall, UV index, and comfortability.  
 - **Visualization:** Integrated interactive graphs for easy understanding of trends and probabilities.
-
----
-
-### 📈 Summary
-
-This project bridges **AI, climate science, and user-centered design** — providing long-term insights to help individuals, organizations, and governments **plan confidently** without weather uncertainties.
 
 ---
 
