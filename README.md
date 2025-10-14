@@ -1,10 +1,69 @@
 # Kalkia - Weather Probability Checker
 
-#### 📌 Project description: 
-Plan outdoor events with confidence using NASA Earth observation data. Get historical weather probabilities for any location and date—from extreme heat and rainfall to wind conditions and air quality—months in advance.
+#### 📌 Summary: 
+We developed a weather probabilty app which can help individuals determine the weather for months in advance to plan an event safetly without risking an environmental interference. This app analyzes 44 years of data drom 1981 to 2025 and than predicts the future weather of any particular place at any particular date, telling if the weather is very hot, very cold, windy, rainy, or it is uncomfortable. It also shows graphical representation and percentage likelihood of each weather condition. Moreover, it also recommends that is the date suitable for an outdoor event ot not. We have also integrated an AI chatbot to help manage people's queries and suggest them arrangements. It is important as it can help individuals, and organizations for planning events safetly and mitigate weather risks.
+
+## 🎥 Project Demo
+
+- **🖥️ PPT Presentation:** [https://kalkia-f5c91v9.gamma.site/](https://kalkia-f5c91v9.gamma.site/)
+- **🎬 Video Demo:**
 
 
-The goal is to create an integrated platform where different team members (Frontend, Backend, Data) can collaborate seamlessly.
+https://github.com/user-attachments/assets/af2c91a2-2432-48eb-b759-874ec16cd205
+
+---
+
+## 🌦️ Project Details
+
+Our project predicts **weather probabilities for future decades** to help individuals and organizations plan outdoor events **without worrying about unexpected weather conditions**.
+
+It works by analyzing **44 years of NASA’s historical data (1981–2025)** and calculating how often different weather conditions occurred.  
+Based on this analysis, the app predicts the **likelihood (in percentage)** of each condition — whether it will be:
+
+- ☀️ Very Hot  
+- ❄️ Very Cold  
+- 🌧️ Rainy  
+- 🌬️ Very Windy  
+- 😣 Uncomfortable  
+
+---
+
+### 🎯 Purpose
+
+Our goal is to **harness the power of big data and AI** to extend forecasting horizons to **10–20 years**, offering actionable insights for better planning.
+
+---
+
+### 🌍 Benefits
+
+- 🥳 **Event Planning:** Helps individuals plan outdoor events like parties and celebrations.  
+- 🏢 **Organizations:** Assists in scheduling important meetings, conferences, and community events.  
+- 🌾 **Farmers:** Predicts rainfall likelihood to prevent over-irrigation, improve yield, and reduce flooding.  
+- 🏛️ **Governments:** Supports long-term risk mitigation for floods, droughts, and storms.  
+
+---
+
+### 🤖 Chatbot Integration
+
+We integrated an **AI-powered chatbot** that acts as a virtual event manager — helping users plan around weather risks and answering event-related queries.
+
+---
+
+### 📊 Key Factors Considered
+
+- **Accuracy:** Powered by 44 years of climatological data and fine-tuned ML logic.  
+- **User Experience:** Fast, intuitive, and visually engaging design.  
+- **Accessibility:** Works across all devices for users with varying technical skills.  
+- **Scalability:** Cloud-native architecture for real-time data updates.  
+- **Variables Analyzed:**  
+  Temperature extremes, humidity levels, wind speed, rainfall, UV index, and comfortability.  
+- **Visualization:** Integrated interactive graphs for easy understanding of trends and probabilities.
+
+---
+
+### 📈 Summary
+
+This project bridges **AI, climate science, and user-centered design** — providing long-term insights to help individuals, organizations, and governments **plan confidently** without weather uncertainties.
 
 ---
 
