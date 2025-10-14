@@ -64,7 +64,7 @@ We integrated an **AI-powered chatbot** that acts as a virtual event manager —
 ## 🚀 Tech Stack
 
 - **Frontend**: Next.js `14.2`, TypeScript, Tailwind CSS, ShadCN, LottieFiles (animations)
-- **Data**: [NASA Daily Power API (MERRA-2)](https://power.larc.nasa.gov/docs/services/api/temporal/daily/)
+- **Data & Resoures**: [NASA Daily Power API (MERRA-2)](https://power.larc.nasa.gov/docs/services/api/temporal/daily/), Google GEMINI API
 - **Data Analysis**: Recharts, chars (from shadcn)
 - **Version Control**: Git + GitHub  
 
